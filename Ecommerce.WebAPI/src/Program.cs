@@ -19,6 +19,7 @@ using Microsoft.OpenApi.Models;
 using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entities.OrderAggregate;
+using Walmad.WebAPI.src.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -140,15 +141,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 );
 
 
+// config authorization
+builder.Services.AddAuthorization(policy =>
+{
+    policy.AddPolicy("AdminOrOwnerOrder", policy => policy.Requirements.Add(new AdminOrOwnerOrderRequirement()));
+    policy.AddPolicy("AdminOrOwnerReview", policy => policy.Requirements.Add(new AdminOrOwnerReviewRequirement()));
+    policy.AddPolicy("AdminOrOwnerAccount", policy => policy.Requirements.Add(new AdminOrOwnerAccountRequirement()));
+});
+
 var app = builder.Build();
 
-// Ensure each user has a cart
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var cartRepository = services.GetRequiredService<ICartRepository>();
-    await cartRepository.EnsureCartsForAllUsers();
-}
+
 
 app.UseSwagger();
 app.UseSwaggerUI();

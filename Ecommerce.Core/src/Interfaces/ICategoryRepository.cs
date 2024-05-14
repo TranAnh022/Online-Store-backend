@@ -5,7 +5,6 @@ namespace Ecommerce.Core.src.Interfaces
 {
     public interface ICategoryRepository : IBaseRepository<Category, QueryOptions>
     {
-        // Retrieves all products under a specific category with pagination and sorting
-        Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(Guid categoryId, ProductQueryOptions queryOptions);
+        
     }
 }

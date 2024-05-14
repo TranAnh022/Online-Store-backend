@@ -1,6 +1,7 @@
 using AutoMapper;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entities;
+using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
@@ -37,7 +38,8 @@ namespace Ecommerce.Service.src.Service
             // Add the user to the repository
             user = await _userRepository.AddAsync(user);
             // Create a cart for the new user
-            await _cartRepository.CreateCartForUser(user.Id);
+            var cart = new Cart(user.Id);
+            await _cartRepository.AddAsync(cart);
             // Map and return the result
             return _mapper.Map<UserReadDto>(user);
         }

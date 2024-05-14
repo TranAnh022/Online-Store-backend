@@ -8,8 +8,5 @@ namespace Ecommerce.Core.src.Interfaces
         // Method to retrieve all reviews for a specific product
         Task<IEnumerable<Review>> GetReviewsByProductIdAsync(Guid productId);
 
-        // Method to retrieve all reviews made by a specific user
-        Task<IEnumerable<Review>> GetReviewsByUserIdAsync(Guid userId);
-
     }
 }

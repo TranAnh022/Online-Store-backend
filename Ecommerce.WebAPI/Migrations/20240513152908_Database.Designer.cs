@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240507225152_changedb")]
-    partial class changedb
+    [Migration("20240513152908_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,25 +139,25 @@ namespace Ecommerce.WebAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9d5745e9-3102-4ec3-b1d8-8fd87b7484c1"),
+                            Id = new Guid("abbc429f-0561-41bd-8310-0f9bb9d579dd"),
                             Image = "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                             Name = "Electronics"
                         },
                         new
                         {
-                            Id = new Guid("b5dcb138-9cd9-43a5-8ce8-fba2f5b4e6ae"),
+                            Id = new Guid("0f477590-a9b1-42c1-907a-0fed525ef403"),
                             Image = "https://plus.unsplash.com/premium_photo-1682435561654-20d84cef00eb?q=80&w=1918&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                             Name = "Shoes"
                         },
                         new
                         {
-                            Id = new Guid("caa2b08c-3394-43ed-bb98-bb90a6a2180f"),
+                            Id = new Guid("eaf433aa-0b4e-48df-b851-b2ac3bb271df"),
                             Image = "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                             Name = "Home Goods"
                         },
                         new
                         {
-                            Id = new Guid("30a9b806-efc9-427c-a049-c3cd5f9a0b81"),
+                            Id = new Guid("be9a45e0-c022-4f0d-9766-39c27a342f9e"),
                             Image = "https://images.unsplash.com/photo-1500995617113-cf789362a3e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dG95c3xlbnwwfHwwfHx8MA%3D%3D",
                             Name = "Toys"
                         });
@@ -426,7 +426,7 @@ namespace Ecommerce.WebAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4ad9dc45-a4ed-4443-8fcf-c4b34ced8be5"),
+                            Id = new Guid("29a47cf3-38be-4451-978c-eaf4a203ef69"),
                             Avatar = "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg",
                             Email = "admin@mail.com",
                             Name = "Admin",
@@ -435,7 +435,7 @@ namespace Ecommerce.WebAPI.Migrations
                         },
                         new
                         {
-                            Id = new Guid("50136968-7b26-4fdd-8e3b-2ab557637ec9"),
+                            Id = new Guid("a809cd16-e6c8-4283-b5b1-591cb937577e"),
                             Avatar = "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg",
                             Email = "john@mail.com",
                             Name = "John",
@@ -446,10 +446,10 @@ namespace Ecommerce.WebAPI.Migrations
 
             modelBuilder.Entity("Ecommerce.Core.src.ValueObjects.ProductSnapshot", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("product_id");
+                        .HasColumnName("id");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -459,11 +459,15 @@ namespace Ecommerce.WebAPI.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("price");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
+
                     b.Property<string>("Title")
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.HasKey("ProductId")
+                    b.HasKey("Id")
                         .HasName("pk_product_snapshots");
 
                     b.ToTable("product_snapshots", (string)null);

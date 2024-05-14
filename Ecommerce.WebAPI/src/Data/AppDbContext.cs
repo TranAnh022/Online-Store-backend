@@ -108,7 +108,6 @@ namespace Ecommerce.WebAPI.src.Data
             {
                 entity.ToTable("cart_items");
                 entity.HasKey(ci => ci.Id).HasName("cart_item_pkey");
-                entity.HasOne(ci => ci.Cart).WithMany(c => c.CartItems).HasForeignKey(ci => ci.CartId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(ci => ci.Product).WithMany(p => p.CartItems).HasForeignKey(ci => ci.ProductId).OnDelete(DeleteBehavior.SetNull);
                 entity.HasCheckConstraint("quantity_check", "quantity > 0");
             });

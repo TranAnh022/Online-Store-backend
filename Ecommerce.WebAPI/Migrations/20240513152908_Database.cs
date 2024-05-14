@@ -36,6 +36,7 @@ namespace Ecommerce.WebAPI.Migrations
                 name: "product_snapshots",
                 columns: table => new
                 {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     product_id = table.Column<Guid>(type: "uuid", nullable: false),
                     title = table.Column<string>(type: "text", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
@@ -43,7 +44,7 @@ namespace Ecommerce.WebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_product_snapshots", x => x.product_id);
+                    table.PrimaryKey("pk_product_snapshots", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,7 +238,7 @@ namespace Ecommerce.WebAPI.Migrations
                         name: "fk_order_items_product_snapshots_product_snapshot_id",
                         column: x => x.product_snapshot_id,
                         principalTable: "product_snapshots",
-                        principalColumn: "product_id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -246,10 +247,10 @@ namespace Ecommerce.WebAPI.Migrations
                 columns: new[] { "id", "image", "name" },
                 values: new object[,]
                 {
-                    { new Guid("37bbcefb-90f4-435d-aa3f-30ebea501f2d"), "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Electronics" },
-                    { new Guid("786824af-d340-49a0-95a8-ef11107e6e2f"), "https://images.unsplash.com/photo-1500995617113-cf789362a3e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dG95c3xlbnwwfHwwfHx8MA%3D%3D", "Toys" },
-                    { new Guid("9b436a43-6f13-4835-8bf8-e74a091bb1f9"), "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Home Goods" },
-                    { new Guid("a8339233-ec1e-4d9a-a3bc-8a0841b72b11"), "https://plus.unsplash.com/premium_photo-1682435561654-20d84cef00eb?q=80&w=1918&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Shoes" }
+                    { new Guid("0f477590-a9b1-42c1-907a-0fed525ef403"), "https://plus.unsplash.com/premium_photo-1682435561654-20d84cef00eb?q=80&w=1918&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Shoes" },
+                    { new Guid("abbc429f-0561-41bd-8310-0f9bb9d579dd"), "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Electronics" },
+                    { new Guid("be9a45e0-c022-4f0d-9766-39c27a342f9e"), "https://images.unsplash.com/photo-1500995617113-cf789362a3e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dG95c3xlbnwwfHwwfHx8MA%3D%3D", "Toys" },
+                    { new Guid("eaf433aa-0b4e-48df-b851-b2ac3bb271df"), "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Home Goods" }
                 });
 
             migrationBuilder.InsertData(
@@ -257,8 +258,8 @@ namespace Ecommerce.WebAPI.Migrations
                 columns: new[] { "id", "avatar", "email", "name", "password", "role" },
                 values: new object[,]
                 {
-                    { new Guid("2e991189-c021-476f-a76e-e54f4dca7554"), "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg", "admin@mail.com", "Admin", "admin@123", UserRole.Admin },
-                    { new Guid("4b998fe2-be3a-4e23-bfcd-ad5a5c942665"), "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg", "john@mail.com", "John", "john@123", UserRole.User }
+                    { new Guid("29a47cf3-38be-4451-978c-eaf4a203ef69"), "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg", "admin@mail.com", "Admin", "admin@123", UserRole.Admin },
+                    { new Guid("a809cd16-e6c8-4283-b5b1-591cb937577e"), "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg", "john@mail.com", "John", "john@123", UserRole.User }
                 });
 
             migrationBuilder.CreateIndex(

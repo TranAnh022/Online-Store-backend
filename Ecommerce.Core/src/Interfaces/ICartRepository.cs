@@ -6,17 +6,11 @@ namespace Ecommerce.Core.src.Interfaces
     public interface ICartRepository : IBaseRepository<Cart, QueryOptions>
     {
         // Update a cart item within a specific cart
-        Task<CartItem> UpdateCartItemAsync(Guid cartId, CartItem cartItem);
+        Task<Cart> AddCartItemToCart(Guid productId,int quantity,Guid userId);
 
         // Remove a specific item from the cart
-        Task<bool> DeleteCartItemAsync(Guid cartItemId);
+        Task<bool> RemoveCartItem(Guid productId, int quantity, Guid userId);
 
-        // Method to retrieve a cart by its associated user ID
         Task<Cart> GetCartByUserIdAsync(Guid userId);
-
-        // Method to create cart when user created 
-        Task<Cart> CreateCartForUser(Guid userId);
-        // Method to ensure that all users have a cart
-        Task EnsureCartsForAllUsers();
     }
 }

@@ -9,11 +9,11 @@ namespace Ecommerce.Service.src.ServiceAbstract
     {
         Task<CartReadDto> GetCartByUserIdAsync(Guid userId);
 
-        Task<CartItem> AddItemToCartAsync(Guid cartId, CartItemCreateDto itemDto);
+        Task<CartReadDto> AddItemToCartAsync(Guid productId,int quantity,Guid userId);
 
-        Task<bool> RemoveItemFromCartAsync(Guid cartId, Guid itemId);
+        Task<bool> RemoveItemFromCartAsync(Guid productId, int quantity, Guid userId);
 
-        Task<bool> ClearCartAsync(Guid cartId);
+
 
     }
 }

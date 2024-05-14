@@ -10,56 +10,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.WebAPI.src.Repo
 {
-    public class OrderItemRepository : IBaseRepository<OrderItem, QueryOptions>
+    public class OrderItemRepository :BaseRepo<OrderItem,QueryOptions>,IBaseRepository<OrderItem, QueryOptions>
     {
-        private readonly AppDbContext _context;
 
-        private readonly DbSet<OrderItem> _orderItems;
-        public OrderItemRepository(AppDbContext context)
+        public OrderItemRepository(AppDbContext context):base(context)
         {
-            _context = context;
-            _orderItems = _context.OrderItems;
-        }
 
-        public async Task<OrderItem> AddAsync(OrderItem entity)
-        {
-            _orderItems.Add(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var item = await _orderItems.FindAsync(id);
-            if (item == null) return false;
-            _orderItems.Remove(item);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<OrderItem> GetByIdAsync(Guid id)
-        {
-            return await _orderItems.FindAsync(id) ?? throw new ArgumentException("OrderItem not found", nameof(id)); ;
         }
 
         public async Task<IEnumerable<OrderItem>> ListAsync(QueryOptions queryOptions)
         {
-            var query = _orderItems.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(queryOptions.SortBy))
-            {
-                switch (queryOptions.SortBy.ToLower())
-                {
-                    case "price":
-                        query = queryOptions.SortOrder == "asc" ? query.OrderBy(oi => oi.Price) : query.OrderByDescending(p => p.Price);
-                        break;
-                    case "quantity":
-                        query = queryOptions.SortOrder == "asc" ? query.OrderBy(oi => oi.Quantity) : query.OrderByDescending(oi => oi.Quantity);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            var query = _data.AsQueryable();
 
             if (queryOptions.Page.HasValue && queryOptions.PageSize.HasValue)
             {
@@ -68,11 +29,5 @@ namespace Ecommerce.WebAPI.src.Repo
             return await query.ToListAsync();
         }
 
-        public async Task<OrderItem> UpdateAsync(OrderItem entity)
-        {
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return entity;
-        }
     }
 }

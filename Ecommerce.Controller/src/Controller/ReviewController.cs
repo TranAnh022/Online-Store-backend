@@ -59,27 +59,6 @@ namespace Ecommerce.Controller.src.Controller
             }
         }
 
-        // GET: api/v1/reviews/users/{userId}
-        // Get all reviews by user ID
-        [HttpGet("users/{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ReviewReadDto>>> GetReviewsByUser([FromRoute] Guid id)
-        {
-            try
-            {
-                var reviews = await _reviewService.GetReviewsByUserIdAsync(id);
-                if (reviews == null || !reviews.Any())
-                {
-                    return NotFound("No reviews found for the specified user.");
-                }
-                return Ok(reviews);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error retrieving reviews: {ex.Message}");
-            }
-        }
-
         // POST: api/v1/reviews
         // Adds a new product review
         [Authorize(Roles = "User")]

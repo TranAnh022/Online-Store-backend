@@ -12,61 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.WebAPI.src.Repo
 {
-    public class UserRepo : IUserRepository
+    public class UserRepo : BaseRepo<User,UserQueryOptions>, IUserRepository
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<User> _users;
 
-        public UserRepo(AppDbContext context)
+        public UserRepo(AppDbContext context) :base(context)
         {
-            _context = context;
-            _users = _context.Users;
-        }
-
-        public async Task<User> AddAsync(User entity)
-        {
-            _users.Add(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var user = await _users.FindAsync(id);
-            if (user == null)
-                return false;
-            _users.Remove(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> ExistsAsync(Guid userId)
-        {
-            return await _users.AnyAsync(u => u.Id == userId);
-        }
-
-        public async Task<User> GetByEmailAsync(string email)
-        {
-            return await _users.FirstOrDefaultAsync(u => u.Email == email);
-        }
-
-        public async Task<User> GetByIdAsync(Guid id)
-        {
-            return await _users.FindAsync(id);
-        }
-
-        public async Task<User> GetUserByCredentialsAsync(UserCredential userCredential)
-        {
-            var foundUser = await _users.FirstOrDefaultAsync(user => user.Email == userCredential.Email);
-            if (foundUser != null)
-            {
-                Console.WriteLine($"User found with ID: {foundUser.Id}");
-            }
-            else
-            {
-                Console.WriteLine("No user found with the provided credentials.");
-            }
-            return foundUser;
         }
 
         public async Task<IEnumerable<User>> ListAsync(UserQueryOptions options)
@@ -76,9 +26,10 @@ namespace Ecommerce.WebAPI.src.Repo
             if (options == null)
             {
 
-                return await _users.ToListAsync();
+                return await _data.ToListAsync();
             }
-            IQueryable<User> query = _users;
+
+            var query = _data.AsQueryable();
 
             if (!string.IsNullOrEmpty(options.Name))
             {
@@ -96,40 +47,20 @@ namespace Ecommerce.WebAPI.src.Repo
             return users;
         }
 
-        public async Task<User> RegisterAsync(User newUser)
-        {
-            _users.Add(newUser);
-            await _context.SaveChangesAsync();
-            return newUser;
-        }
-
         public async Task<bool> ResetPasswordAsync(Guid userId, string newPassword)
         {
-            var user = await _users.FindAsync(userId);
+            var user = await _data.FindAsync(userId);
             if (user == null)
                 return false;
 
             user.Password = newPassword;
-            await _context.SaveChangesAsync();
+            await _databaseContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<User> UpdateAsync(User entity)
+        public async Task<User> GetByEmailAsync(string email)
         {
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<bool> UpdateUserRoleAsync(Guid userId, UserRole newRole)
-        {
-            var user = await _users.FindAsync(userId);
-            if (user == null)
-                return false;
-
-            user.Role = newRole;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _data.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

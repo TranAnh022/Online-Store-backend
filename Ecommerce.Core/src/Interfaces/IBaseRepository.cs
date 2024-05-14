@@ -9,5 +9,6 @@ namespace Ecommerce.Core.src.Interfaces
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task<bool> DeleteAsync(Guid id);
+        Task<bool> ExistsAsync(Guid id);
     }
 }

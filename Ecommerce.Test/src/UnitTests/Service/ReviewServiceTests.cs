@@ -51,58 +51,6 @@ namespace Ecommerce.Test.src.UnitTests.Service
             _mockReviewRepository.Verify(x => x.AddAsync(It.IsAny<Review>()), Times.Once);
         }
 
-        [Theory]
-        [InlineData(1)]
-        [InlineData(5)]
-        public async Task UpdateRatingAsync_UpdatesRatingSuccessfully_WhenReviewExists(int newRating)
-        {
-            var reviewId = Guid.NewGuid();
-            var review = new Review { Id = reviewId, Rating = 3 };
-            _mockReviewRepository.Setup(x => x.GetByIdAsync(reviewId)).ReturnsAsync(review);
-            _mockReviewRepository.Setup(x => x.UpdateAsync(review)).ReturnsAsync(review);
-
-            var result = await _reviewService.UpdateRatingAsync(reviewId, newRating);
-
-            Assert.True(result);
-            Assert.Equal(newRating, review.Rating);
-            _mockReviewRepository.Verify(x => x.UpdateAsync(It.IsAny<Review>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdateRatingAsync_ThrowsKeyNotFoundException_WhenReviewNotFound()
-        {
-            var reviewId = Guid.NewGuid();
-            _mockReviewRepository.Setup(x => x.GetByIdAsync(reviewId)).ReturnsAsync((Review)null!);
-
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _reviewService.UpdateRatingAsync(reviewId, 4));
-        }
-
-        [Fact]
-        public async Task UpdateContextAsync_UpdatesContext_WhenReviewExists()
-        {
-            var reviewId = Guid.NewGuid();
-            var review = new Review { Id = reviewId, Context = "Old context" };
-            var newContext = "New updated context";
-
-            _mockReviewRepository.Setup(r => r.GetByIdAsync(reviewId)).ReturnsAsync(review);
-            _mockReviewRepository.Setup(r => r.UpdateAsync(review)).ReturnsAsync(review);
-
-            var result = await _reviewService.UpdateContextAsync(reviewId, newContext);
-
-            Assert.True(result);
-            Assert.Equal(newContext, review.Context);
-            _mockReviewRepository.Verify(r => r.UpdateAsync(review), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdateContextAsync_ThrowsKeyNotFoundException_WhenReviewNotFound()
-        {
-            var reviewId = Guid.NewGuid();
-            _mockReviewRepository.Setup(r => r.GetByIdAsync(reviewId)).ReturnsAsync((Review)null!);
-
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _reviewService.UpdateContextAsync(reviewId, "Some context"));
-        }
-
         [Fact]
         public async Task DeleteOneAsync_ReturnsTrue_WhenReviewDeleted()
         {
@@ -237,59 +185,6 @@ namespace Ecommerce.Test.src.UnitTests.Service
             Assert.Empty(result);
             _mockReviewRepository.Verify(x => x.GetReviewsByProductIdAsync(productId), Times.Once);
             _mockMapper.Verify(m => m.Map<IEnumerable<ReviewReadDto>>(emptyReviews), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetReviewsByUserIdAsync_ReturnsReviews_WhenReviewsExist()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var reviews = new List<Review>
-            {
-                new Review { Id = Guid.NewGuid(), UserId = userId, Rating = 5, Context = "Excellent!" },
-                new Review { Id = Guid.NewGuid(), UserId = userId, Rating = 4, Context = "Pretty good!" }
-            };
-
-            var reviewDtos = new List<ReviewReadDto>
-            {
-                new ReviewReadDto { Id = reviews[0].Id, UserId = userId, Rating = 5, Context = "Excellent!" },
-                new ReviewReadDto { Id = reviews[1].Id, UserId = userId, Rating = 4, Context = "Pretty good!" }
-            };
-
-            _mockReviewRepository.Setup(x => x.GetReviewsByUserIdAsync(userId))
-                .ReturnsAsync(reviews);
-
-            _mockMapper.Setup(m => m.Map<IEnumerable<ReviewReadDto>>(It.IsAny<IEnumerable<Review>>()))
-                .Returns(reviewDtos);
-
-            // Act
-            var result = await _reviewService.GetReviewsByUserIdAsync(userId);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            _mockReviewRepository.Verify(x => x.GetReviewsByUserIdAsync(userId), Times.Once);
-            _mockMapper.Verify(m => m.Map<IEnumerable<ReviewReadDto>>(reviews), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetReviewsByUserIdAsync_ReturnsEmpty_WhenNoReviewsExist()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            _mockReviewRepository.Setup(x => x.GetReviewsByUserIdAsync(userId))
-                .ReturnsAsync(new List<Review>());
-            _mockMapper.Setup(m => m.Map<IEnumerable<ReviewReadDto>>(It.IsAny<IEnumerable<Review>>()))
-                .Returns(new List<ReviewReadDto>());
-
-            // Act
-            var result = await _reviewService.GetReviewsByUserIdAsync(userId);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
-            _mockReviewRepository.Verify(x => x.GetReviewsByUserIdAsync(userId), Times.Once);
-            _mockMapper.Verify(m => m.Map<IEnumerable<ReviewReadDto>>(It.IsAny<IEnumerable<Review>>()), Times.Once);
         }
     }
 }

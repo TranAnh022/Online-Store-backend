@@ -10,12 +10,14 @@ namespace Ecommerce.Controller.src.Controller
 {
     [Route("api/v1/user")]
     public class UserController : ControllerBase
+
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private IAuthorizationService _authorizationService;
+        public UserController(IUserService userService, IAuthorizationService authorizationService)
         {
             _userService = userService;
+            _authorizationService = authorizationService;
         }
         [Authorize(Roles = "Admin")]
         [HttpGet()]
@@ -55,13 +57,26 @@ namespace Ecommerce.Controller.src.Controller
             return user;
         }
 
-        [Authorize]
         [HttpPut("{userId}")] // endpoint: /users/:user_id
         public async Task<UserReadDto> UpdateUserByIdAsync([FromRoute] Guid userId, [FromBody] UserUpdateDto userUpdateDto)
         {
             try
             {
-                return await _userService.UpdateOneAsync(userId, userUpdateDto);
+                var user = await _userService.GetOneByIdAsync(userId);
+                var authorizationResult = _authorizationService
+               .AuthorizeAsync(HttpContext.User, user, "AdminOrOwnerAccount")
+               .GetAwaiter()
+               .GetResult();
+
+                if (authorizationResult.Succeeded)
+                {
+                   var userUpdated= await _userService.UpdateOneAsync(userId, userUpdateDto);
+                    return userUpdated;
+                }
+                else{
+                    return null;
+                }
+
             }
             catch (Exception ex)
             {
@@ -69,13 +84,22 @@ namespace Ecommerce.Controller.src.Controller
             }
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{userId}")] // endpoint: /users/:user_id
         public async Task<bool> DeleteUserByIdAsync([FromRoute] Guid userId)
         {
             try
             {
-                return await _userService.DeleteOneAsync(userId);
+                var user = await _userService.GetOneByIdAsync(userId);
+
+                var authorizationResult = _authorizationService
+                .AuthorizeAsync(HttpContext.User, user, "AdminOrOwnerAccount")
+                .GetAwaiter()
+                .GetResult();
+                if (authorizationResult.Succeeded)
+                {
+                    await _userService.DeleteOneAsync(userId);
+                }
+                return true;
             }
             catch (Exception ex)
             {

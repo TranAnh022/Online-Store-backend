@@ -13,7 +13,5 @@ namespace Ecommerce.Service.src.ServiceAbstract
         // Adds a method to update the user's role
         Task<UserReadDto> UpdateRoleAsync(Guid userId, UserRoleUpdateDto roleUpdateDto);
 
-        // Adds a method to handle specific search or filter operations
-        Task<IEnumerable<UserReadDto>> SearchUsersAsync(UserQueryOptions options);
     }
 }

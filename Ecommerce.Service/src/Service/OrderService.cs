@@ -65,15 +65,6 @@ namespace Ecommerce.Service.src.Service
             await _orderRepository.AddAsync(order);
 
             return _mapper.Map<OrderReadDto>(order);
-
-        }
-
-        public async Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus)
-        {
-            var order = await _repository.GetByIdAsync(orderId) ?? throw new KeyNotFoundException("Order not found.");
-            order.UpdateStatus(newStatus);
-            await _orderRepository.UpdateOrderStatusAsync(orderId, newStatus);
-            return true;
         }
 
         public async Task<bool> CancelOrderAsync(Guid orderId)
@@ -90,7 +81,7 @@ namespace Ecommerce.Service.src.Service
                 if (timeDifference <= TimeSpan.FromHours(24))
                 {
                     foundOrder.Status = OrderStatus.Cancelled;
-                    await _orderRepository.UpdateOrderStatusAsync(orderId, foundOrder.Status);
+                    await _orderRepository.UpdateAsync(foundOrder);
                     return true;
                 }
                 else

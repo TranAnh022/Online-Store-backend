@@ -40,32 +40,12 @@ namespace Ecommerce.Service.src.Service
             var result = await _reviewRepository.AddAsync(newReview);
             return _mapper.Map<ReviewReadDto>(result);
         }
-        public async Task<bool> UpdateRatingAsync(Guid reviewId, int newRating)
-        {
-            var review = await _reviewRepository.GetByIdAsync(reviewId) ?? throw new KeyNotFoundException("Review not found");
-            review.UpdateRating(newRating);
-            await _reviewRepository.UpdateAsync(review);
-            return true;
-        }
-
-        public async Task<bool> UpdateContextAsync(Guid reviewId, string newContext)
-        {
-            var review = await _reviewRepository.GetByIdAsync(reviewId) ?? throw new KeyNotFoundException("Review not found");
-            review.UpdateContext(newContext);
-            await _reviewRepository.UpdateAsync(review);
-            return true;
-        }
-
+    
         public async Task<IEnumerable<ReviewReadDto>> GetReviewsByProductIdAsync(Guid productId)
         {
             var reviews = await _reviewRepository.GetReviewsByProductIdAsync(productId);
             return _mapper.Map<IEnumerable<ReviewReadDto>>(reviews);
         }
 
-        public async Task<IEnumerable<ReviewReadDto>> GetReviewsByUserIdAsync(Guid userId)
-        {
-            var reviews = await _reviewRepository.GetReviewsByUserIdAsync(userId);
-            return _mapper.Map<IEnumerable<ReviewReadDto>>(reviews);
-        }
     }
 }

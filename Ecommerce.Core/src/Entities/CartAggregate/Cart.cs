@@ -24,27 +24,33 @@ namespace Ecommerce.Core.src.Entities.CartAggregate
         }
 
         // Method for add item to cart
-        public void AddItem(CartItem item)
+        public void AddItem(Guid cartId, Product product, int quantity)
         {
-            Guard.Against.Null(item, nameof(item));
-            // Check if the item already exists in the cart
-            var existingItem = _items?.FirstOrDefault(i => i.ProductId == item.ProductId);
+            var existingItem = _items?.FirstOrDefault(i => i.ProductId == product.Id);
             if (existingItem != null)
             {
                 // If the item already exists, update its quantity
-                existingItem.AddQuantity(item.Quantity);
+                existingItem.AddQuantity(quantity);
             }
             else
             {
                 // If the item doesn't exist, add it to the cart
-                _items?.Add(item);
+                var cartItem = new CartItem(cartId, product.Id, quantity);
+                _items?.Add(cartItem);
             }
         }
 
         // Method for remove item from cart
-        public bool RemoveItem(CartItem item)
+        public void RemoveItem(Product product, int quantity)
         {
-            return _items?.Remove(item) ?? false;
+            var item = _items.FirstOrDefault(item => item.ProductId == product.Id);
+
+            if (item == null) return;
+
+            item.Quantity -= quantity;
+
+            if (item.Quantity == 0) _items.Remove(item);
+
         }
 
         // Method for clear cart
