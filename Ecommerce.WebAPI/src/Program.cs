@@ -20,6 +20,7 @@ using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entities.OrderAggregate;
 using Walmad.WebAPI.src.Authorization;
+using CloudinaryDotNet;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -61,7 +62,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-builder.Services.AddCors();
+
 
 // adding db context into your app
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("Localhost"));
@@ -79,15 +80,24 @@ builder.Services.AddDbContext<AppDbContext>
 
 // CORS
 builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-        policy =>
         {
-            policy.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            options.AddPolicy("AllowAllOrigins",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
         });
-});
+
+//Cloudinary
+
+var cloudinarySettings = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+builder.Services.AddSingleton(cloudinarySettings);
+builder.Services.AddSingleton(new Cloudinary(new Account(
+    cloudinarySettings.CloudName,
+    cloudinarySettings.ApiKey,
+    cloudinarySettings.ApiSecret)));
 
 
 // service registration -> automatically create all instances of dependencies
@@ -123,6 +133,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IBaseRepository<OrderItem, QueryOptions>, OrderItemRepository>();
 builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 
+//Cloudinary
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 // Add authentication instructions
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(
@@ -152,7 +164,7 @@ builder.Services.AddAuthorization(policy =>
 var app = builder.Build();
 
 
-
+app.UseCors("AllowAllOrigins");
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseRouting();
