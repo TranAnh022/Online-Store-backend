@@ -45,7 +45,7 @@ namespace Ecommerce.Controller.src.Controller
 
         [Authorize(Roles = "Admin")]
         [HttpPost()]
-        public async Task<ProductReadDto> CreateProductAsync([FromBody] ProductCreateDto productCreateDto)
+        public async Task<ProductReadDto> CreateProductAsync([FromForm] ProductCreateDto productCreateDto)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Ecommerce.Controller.src.Controller
             }
         }
 
-        
+
 
 
 

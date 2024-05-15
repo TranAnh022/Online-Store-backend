@@ -42,6 +42,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.Property(u => u.Name).IsRequired().HasMaxLength(255);
                 entity.Property(u => u.Password).IsRequired().HasMaxLength(255);
                 entity.HasCheckConstraint("users_avatar_check", "avatar LIKE 'http%' OR avatar = ''");
+                entity.HasData(SeedingData.GetUsersSeed());
             });
             // Configuring Order entity
             modelBuilder.Entity<Order>(entity =>
@@ -65,6 +66,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.HasIndex(c => c.Name).IsUnique().HasDatabaseName("categories_name_key");
                 entity.Property(c => c.Image).IsRequired();
                 entity.HasCheckConstraint("categories_image_check", "image LIKE 'http%' OR image = ''");
+                entity.HasData(SeedingData.GetCategoriesSeed());
             });
 
             // Configuring Product entity
@@ -77,6 +79,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.Property(p => p.Price).HasPrecision(18, 2);
                 entity.HasCheckConstraint("products_price_check", "price > 0");
                 entity.HasOne(p => p.Category).WithMany(c => c.Products).HasForeignKey(p => p.CategoryId).OnDelete(DeleteBehavior.SetNull);
+                entity.HasData(SeedingData.GetProductsSeed());
             });
             // Configuring ProductImage entity
             modelBuilder.Entity<ProductImage>(entity =>
@@ -86,6 +89,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.HasOne(pi => pi.Product).WithMany(p => p.Images).HasForeignKey(pi => pi.ProductId).OnDelete(DeleteBehavior.Cascade);
                 entity.Property(pi => pi.Url).IsRequired();
                 entity.HasCheckConstraint("url_check", "url LIKE 'http%' OR url = ''");
+                entity.HasData(SeedingData.GetProductImagesSeed());
             });
 
             // Configuring Cart entity
@@ -136,28 +140,8 @@ namespace Ecommerce.WebAPI.src.Data
 
             modelBuilder.HasPostgresEnum<UserRole>();
             modelBuilder.HasPostgresEnum<OrderStatus>();
-            modelBuilder.Entity<User>().HasData(
-            new User("Admin", "admin@mail.com", "admin@123", "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg", UserRole.Admin),
-            new User("John", "john@mail.com", "john@123", "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg", UserRole.User)
-            );
-
 
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.HasData(
-                    [
-                        new Category("Electronics", "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                        new Category("Shoes", "https://plus.unsplash.com/premium_photo-1682435561654-20d84cef00eb?q=80&w=1918&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                        new Category("Home Goods","https://images.unsplash.com/photo-1556912173-3bb406ef7e77?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                        new Category("Toys", "https://images.unsplash.com/photo-1500995617113-cf789362a3e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dG95c3xlbnwwfHwwfHx8MA%3D%3D"),
-                    ]
-                );
-            });
-
-
-
         }
     }
 

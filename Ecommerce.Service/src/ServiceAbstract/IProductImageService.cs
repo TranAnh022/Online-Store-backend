@@ -11,5 +11,7 @@ namespace Ecommerce.Service.src.ServiceAbstract
     public interface IProductImageService : IBaseService<ProductImageReadDto, ProductImageCreateDto, ProductImageUpdateDto, QueryOptions>
     {
         Task<ProductImageReadDto> UpdateImageUrlAsync(Guid imageId, string newUrl);
+
+        
     }
 }

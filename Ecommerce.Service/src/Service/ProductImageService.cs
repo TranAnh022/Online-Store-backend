@@ -24,5 +24,6 @@ namespace Ecommerce.Service.src.Service
             await _productImageRepository.UpdateAsync(productImage);
             return _mapper.Map<ProductImageReadDto>(productImage);
         }
+
     }
 }

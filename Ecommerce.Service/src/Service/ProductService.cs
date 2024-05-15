@@ -13,14 +13,15 @@ namespace Ecommerce.Service.src.Service
         private IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-
+        private readonly ICloudinaryService _cloudinaryService;
         private IProductImageRepository _productImageRepository;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper, IProductImageRepository productImageRepository, ICategoryRepository categoryRepository) : base(productRepository, mapper)
+        public ProductService(IProductRepository productRepository, ICloudinaryService cloudinaryService, IMapper mapper, IProductImageRepository productImageRepository, ICategoryRepository categoryRepository) : base(productRepository, mapper)
         {
             _productRepository = productRepository;
             _productImageRepository = productImageRepository;
             _categoryRepository = categoryRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<ProductReadDto> SetProductImagesAsync(Guid productId, IEnumerable<ProductImageCreateDto> imageDtos)
@@ -68,7 +69,7 @@ namespace Ecommerce.Service.src.Service
 
         public override async Task<ProductReadDto> CreateOneAsync(ProductCreateDto createDto)
         {
-            
+
             var category = await _categoryRepository.GetByIdAsync(createDto.CategoryId);
             if (category == null)
             {
@@ -82,20 +83,35 @@ namespace Ecommerce.Service.src.Service
                inventory: createDto.Inventory,
                categoryId: createDto.CategoryId
            );
-            var createdProduct = await _productRepository.AddAsync(product);
 
-            if (createDto.Images != null)
+            var images = new List<ProductImage>();
+            
+            // Process ImageUrls
+            if (createDto.ImageUrls != null)
             {
-                foreach (var imageUrl in createDto.Images)
+                foreach (var imageUrl in createDto.ImageUrls)
                 {
-                    var image = new ProductImage(productId: product.Id, url: imageUrl);
-                    await _productImageRepository.AddAsync(image);
+                    var productImage = new ProductImage(product.Id, imageUrl);
+                    images.Add(productImage);
                 }
             }
-            // Add the new Product entity to the repository
 
+            // Process ImageFiles
+            if (createDto.ImageFiles != null)
+            {
+                foreach (var file in createDto.ImageFiles)
+                {
+                    var imageUrl = await _cloudinaryService.AddPhoto(file);
+                    var productImage = new ProductImage(product.Id, imageUrl);
+                    images.Add(productImage);
+                }
+            }
+
+            product.SetImages(images);
+            // Add the new Product entity to the repository
+            await _productRepository.AddAsync(product);
             // Map the created Product entity back to a ProductReadDto and return it
-            var productReadDto = _mapper.Map<ProductReadDto>(createdProduct);
+            var productReadDto = _mapper.Map<ProductReadDto>(product);
             return productReadDto;
         }
 
