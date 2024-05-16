@@ -5,6 +5,7 @@ using Ecommerce.Core.src.Entities;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 
 namespace Ecommerce.Service.src.Service
 {
@@ -74,7 +75,7 @@ namespace Ecommerce.Service.src.Service
             if (category == null)
             {
                 // Handle the case where the category is not found
-                throw new KeyNotFoundException("Category not found");
+                throw CustomExeption.NotFoundException("Category not found");
             }
             var product = new Product(
                title: createDto.Title,
@@ -85,7 +86,7 @@ namespace Ecommerce.Service.src.Service
            );
 
             var images = new List<ProductImage>();
-            
+
             // Process ImageUrls
             if (createDto.ImageUrls != null)
             {
@@ -117,7 +118,7 @@ namespace Ecommerce.Service.src.Service
 
         public override async Task<ProductReadDto> UpdateOneAsync(Guid id, ProductUpdateDto updateDto)
         {
-            var product = await _productRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Product not found for update");
+            var product = await _productRepository.GetByIdAsync(id) ?? throw CustomExeption.NotFoundException("Product not found");
             // Update product information if provided in the update DTO
 
             if (!string.IsNullOrEmpty(updateDto.Title))
@@ -143,24 +144,41 @@ namespace Ecommerce.Service.src.Service
                 product.Inventory = updateDto.Inventory.Value;
             }
 
-            // Update product images
-            if (updateDto.Images != null && updateDto.Images.Any())
+            // Update product imagesURL
+            if (updateDto.ImageUrls != null && updateDto.ImageUrls.Any())
             {
-                Console.WriteLine("Work");
-                foreach (var imageURL in updateDto.Images)
+                foreach (var imageURL in updateDto.ImageUrls)
                 {
-                    Console.WriteLine("Work here");
                     {
                         var existingImage = await _productImageRepository.CheckImageAsync(imageURL);
                         if (existingImage == false)
                         {
-                            Console.WriteLine("Work here");
                             var newImage = new ProductImage(productId: product.Id, url: imageURL);
                             await _productImageRepository.AddAsync(newImage);
                         }
                     }
                 }
             }
+
+            //Update producy imageFile
+            if(updateDto.ImageFiles != null && updateDto.ImageFiles.Any())
+            {
+                var ImageProductList = await _productImageRepository.GetByProductIdAsync(product.Id);
+
+                foreach(var imageFile in ImageProductList)
+                {
+                    await _cloudinaryService.DeletePhoto(imageFile.Id);
+                    await _productImageRepository.DeleteAsync(imageFile.Id);
+                }
+
+                foreach (var file in updateDto.ImageFiles)
+                {
+                    var imageUrl = await _cloudinaryService.AddPhoto(file);
+                    var productImage = new ProductImage(product.Id, imageUrl);
+                    await _productImageRepository.AddAsync(productImage);
+                }
+            }
+
             Console.WriteLine($"Entity after update: {product}");
 
             var newProduct = await _repository.UpdateAsync(product);

@@ -5,12 +5,13 @@ using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 using Microsoft.AspNetCore.Identity;
 
 
 namespace Ecommerce.Service.src.Service
 {
-    public class UserService : BaseService<User, UserReadDto, UserCreateDto, UserUpdateDto, UserQueryOptions>, IUserService
+    public class UserService : BaseService<User, UserReadDto, UserCreateDto, UserUpdateDto, QueryOptions>, IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly ICartRepository _cartRepository;
@@ -59,7 +60,7 @@ namespace Ecommerce.Service.src.Service
             return userDeleted;
         }
 
-        public async Task<IEnumerable<UserReadDto>> SearchUsersAsync(UserQueryOptions options)
+        public async Task<IEnumerable<UserReadDto>> SearchUsersAsync(QueryOptions options)
         {
             var users = await _userRepository.ListAsync(options);
             return _mapper.Map<IEnumerable<UserReadDto>>(users);
@@ -67,7 +68,7 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<bool> UpdatePasswordAsync(Guid userId, string newPassword)
         {
-            var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException("User not found");
+            var user = await _userRepository.GetByIdAsync(userId) ?? throw CustomExeption.NotFoundException("User not found");
             user.Password = _passwordHasher.HashPassword(user, newPassword);
             await _userRepository.UpdateAsync(user);
             return true;
@@ -75,7 +76,7 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<UserReadDto> UpdateRoleAsync(Guid userId, UserRoleUpdateDto roleUpdateDto)
         {
-            var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException("User not found");
+            var user = await _userRepository.GetByIdAsync(userId) ?? throw CustomExeption.NotFoundException("User not found");
             user.Role = roleUpdateDto.NewRole;
             user = await _userRepository.UpdateAsync(user);
             return _mapper.Map<UserReadDto>(user);

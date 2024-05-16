@@ -23,40 +23,17 @@ namespace Ecommerce.Controller.src.Controller
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ReviewReadDto>>> GetAllReviews([FromQuery] QueryOptions options)
         {
-            try
-            {
-                var reviews = await _reviewService.GetAllAsync(options);
-                if (reviews.Any())
-                {
-                    return Ok(reviews);
-                }
-                return NotFound("No reviews available.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to retrieve reviews: {ex.Message}");
-            }
+            var reviews = await _reviewService.GetAllAsync(options);
+            return Ok(reviews);
         }
-
         // GET: api/v1/reviews/{id}
         // Get all reviews by product ID
         [HttpGet("products/{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ReviewReadDto>>> GetReviewsByProduct([FromRoute] Guid id)
         {
-            try
-            {
-                var reviews = await _reviewService.GetReviewsByProductIdAsync(id);
-                if (!reviews.Any())
-                {
-                    return NotFound($"No reviews found for product ID: {id}");
-                }
-                return Ok(reviews);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error retrieving reviews for product ID: {id}. Error: {ex.Message}");
-            }
+            var reviews = await _reviewService.GetReviewsByProductIdAsync(id);
+            return Ok(reviews);
         }
 
         // POST: api/v1/reviews
@@ -65,36 +42,17 @@ namespace Ecommerce.Controller.src.Controller
         [HttpPost]
         public async Task<ActionResult<ReviewReadDto>> AddReview([FromBody] ReviewCreateDto reviewCreateDto)
         {
-            try
-            {
-                var createdReview = await _reviewService.CreateOneAsync(reviewCreateDto);
-                return CreatedAtAction(nameof(GetReviewById), new { id = createdReview.Id }, createdReview);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to create review: {ex.Message}");
-            }
+            var createdReview = await _reviewService.CreateOneAsync(reviewCreateDto);
+            return CreatedAtAction(nameof(GetReviewById), new { id = createdReview.Id }, createdReview);
         }
 
         // GET: api/v1/reviews/{id}
         // Retrieves details of a specific review by its id
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<ReviewReadDto>> GetReviewById([FromRoute] Guid id)
         {
-            try
-            {
-                var review = await _reviewService.GetOneByIdAsync(id);
-                if (review == null)
-                {
-                    return NotFound($"No review found with ID: {id}");
-                }
-                return Ok(review);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error retrieving review with ID: {id}. Error: {ex.Message}");
-            }
+            var review = await _reviewService.GetOneByIdAsync(id);
+            return Ok(review);
         }
 
         // PUT: api/v1/reviews/{id}
@@ -103,19 +61,8 @@ namespace Ecommerce.Controller.src.Controller
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReview([FromRoute] Guid id, [FromBody] ReviewUpdateDto reviewUpdateDto)
         {
-            try
-            {
-                var updatedReview = await _reviewService.UpdateOneAsync(id, reviewUpdateDto);
-                if (updatedReview == null)
-                {
-                    return NotFound($"No review found with ID: {id} for update.");
-                }
-                return Ok(updatedReview);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to update review with ID: {id}. Error: {ex.Message}");
-            }
+            var updatedReview = await _reviewService.UpdateOneAsync(id, reviewUpdateDto);
+            return Ok(updatedReview);
         }
 
         // DELETE: api/v1/reviews/{id}
@@ -124,19 +71,9 @@ namespace Ecommerce.Controller.src.Controller
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] Guid id)
         {
-            try
-            {
-                var result = await _reviewService.DeleteOneAsync(id);
-                if (!result)
-                {
-                    return NotFound($"No review found with ID: {id} for deletion.");
-                }
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to delete review with ID: {id}. Error: {ex.Message}");
-            }
+            var result = await _reviewService.DeleteOneAsync(id);
+            return Ok(result);
         }
+
     }
 }

@@ -4,6 +4,7 @@ using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 
 namespace Ecommerce.Service.src.Service
 {
@@ -19,12 +20,12 @@ namespace Ecommerce.Service.src.Service
         {
             if (!await _productRepository.ExistsAsync(productId))
             {
-                throw new KeyNotFoundException($"No product found with ID {productId}");
+                throw  CustomExeption.NotFoundException($"No product found with ID {productId}");
             }
-            var cartItem = await _repository.GetByIdAsync(cartItemId) ?? throw new KeyNotFoundException($"CartItem with ID {cartItemId} not found");
+            var cartItem = await _repository.GetByIdAsync(cartItemId) ?? throw CustomExeption.NotFoundException($"CartItem with ID {cartItemId} not found");
             if (cartItem.ProductId != productId)
             {
-                throw new ArgumentException("The product ID does not match the cart item's product.");
+                throw CustomExeption.NotFoundException("The product ID does not match the cart item's product.");
             }
             cartItem.AddQuantity(quantity);
             var updatedCartItem = await _repository.UpdateAsync(cartItem);
@@ -35,12 +36,12 @@ namespace Ecommerce.Service.src.Service
         {
             if (!await _productRepository.ExistsAsync(productId))
             {
-                throw new KeyNotFoundException($"No product found with ID {productId}");
+                throw CustomExeption.NotFoundException($"No product found with ID {productId}");
             }
             var cartItem = await _repository.GetByIdAsync(cartItemId) ?? throw new KeyNotFoundException($"CartItem with ID {cartItemId} not found");
             if (cartItem.ProductId != productId)
             {
-                throw new ArgumentException("The product ID does not match the cart item's product.");
+                throw CustomExeption.NotFoundException("The product ID does not match the cart item's product.");
             }
             cartItem.SetQuantity(quantity);
             var updatedCartItem = await _repository.UpdateAsync(cartItem);

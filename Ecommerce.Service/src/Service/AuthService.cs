@@ -36,7 +36,7 @@ namespace Ecommerce.Service.src.Service
             var foundByEmail = await _userRepo.GetByEmailAsync(userCredential.Email);
             if (foundByEmail == null)
             {
-                throw new Exception("Email not found");
+                throw CustomExeption.NotFoundException("User not found");
             }
             var isPasswordMatch = _passwordService.VerifyPassword(foundByEmail, foundByEmail.Password, userCredential.Password);
             if (isPasswordMatch == PasswordVerificationResult.Failed)

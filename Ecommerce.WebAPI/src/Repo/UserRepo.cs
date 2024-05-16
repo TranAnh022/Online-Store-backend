@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.WebAPI.src.Repo
 {
-    public class UserRepo : BaseRepo<User,UserQueryOptions>, IUserRepository
+    public class UserRepo : BaseRepo<User,QueryOptions>, IUserRepository
     {
 
         public UserRepo(AppDbContext context) :base(context)
         {
         }
 
-        public async Task<IEnumerable<User>> ListAsync(UserQueryOptions options)
+        public async Task<IEnumerable<User>> ListAsync(QueryOptions options)
         {
             Console.WriteLine($"options", options);
 
@@ -31,12 +31,12 @@ namespace Ecommerce.WebAPI.src.Repo
 
             var query = _data.AsQueryable();
 
-            if (!string.IsNullOrEmpty(options.Name))
+            if (!string.IsNullOrEmpty(options.Search))
             {
-                query = query.Where(u => u.Name == options.Name);
+                query = query.Where(u => u.Name == options.Search);
             }
 
-            if (!string.IsNullOrEmpty(options.Role) && Enum.TryParse<UserRole>(options.Role, out var role))
+            if (!string.IsNullOrEmpty(options.SortBy) && Enum.TryParse<UserRole>(options.SortBy, out var role))
             {
                 query = query.Where(u => u.Role == role);
             }

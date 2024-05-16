@@ -7,6 +7,7 @@ using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Core.src.ValueObjects;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 
 namespace Ecommerce.Service.src.Service
 {
@@ -30,10 +31,10 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<OrderReadDto> CreateOrderFromCartAsync(Guid userId)
         {
-            var cart = await _cartRepository.GetCartByUserIdAsync(userId) ?? throw new KeyNotFoundException("Cart not found.");
+            var cart = await _cartRepository.GetCartByUserIdAsync(userId) ?? throw CustomExeption.NotFoundException("User not found");
             if (cart.CartItems == null || !cart.CartItems.Any())
             {
-                throw new InvalidOperationException("Cart is empty.");
+                throw CustomExeption.NotFoundException("Cart is empty");
             }
 
             var order = new Order(userId);
@@ -60,11 +61,14 @@ namespace Ecommerce.Service.src.Service
 
                 order.AddOrUpdateItem(orderItem);
             }
-            order.CalculateTotalPrice();
+
+            var orderMapDto = _mapper.Map<OrderReadDto>(order);
+
+            orderMapDto.TotalPrice= order.CalculateTotalPrice();
 
             await _orderRepository.AddAsync(order);
 
-            return _mapper.Map<OrderReadDto>(order);
+            return orderMapDto;
         }
 
         public async Task<bool> CancelOrderAsync(Guid orderId)
@@ -73,29 +77,27 @@ namespace Ecommerce.Service.src.Service
             DateTime currentDate = DateTime.Now;
             if (foundOrder is null)
             {
-                return false;
+                throw CustomExeption.NotFoundException("Order not found");
             }
             else
             {
                 TimeSpan timeDifference = currentDate - foundOrder.CreatedAt;
-                if (timeDifference <= TimeSpan.FromHours(24))
+                if (timeDifference > TimeSpan.FromHours(24))
                 {
-                    foundOrder.Status = OrderStatus.Cancelled;
-                    await _orderRepository.UpdateAsync(foundOrder);
-                    return true;
+                    throw CustomExeption.ForbiddenException("Order cannot be canceled as it has exceeded the cancellation period.");
                 }
-                else
-                {
-                    return false;
-                }
+
+                foundOrder.Status = OrderStatus.Cancelled;
+                await _orderRepository.UpdateAsync(foundOrder);
+                return true;
             }
         }
         public async Task<bool> UpdateOrderItemQuantityAsync(Guid orderId, Guid itemId, int quantity)
         {
             // Retrieve the order by its ID
-            var order = await _orderRepository.GetByIdAsync(orderId) ?? throw new KeyNotFoundException($"Order with ID {orderId} not found.");
+            var order = await _orderRepository.GetByIdAsync(orderId) ?? throw CustomExeption.NotFoundException("Order not found");
             // Find the order item by its ID
-            var orderItem = order.OrderItems?.FirstOrDefault(item => item.Id == itemId) ?? throw new KeyNotFoundException($"Order item with ID {itemId} not found within order {orderId}.");
+            var orderItem = order.OrderItems?.FirstOrDefault(item => item.Id == itemId) ?? throw CustomExeption.NotFoundException($"Order item with ID {itemId} not found within order {orderId}.");
             // Update the quantity of the order item
             orderItem.Quantity += quantity;
             // Add or update the modified order item back to the order
@@ -115,7 +117,7 @@ namespace Ecommerce.Service.src.Service
             }
             else
             {
-                throw new Exception("User not found");
+                throw CustomExeption.NotFoundException("User not found");
             }
         }
     }

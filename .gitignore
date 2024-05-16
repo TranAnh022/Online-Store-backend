@@ -6,6 +6,7 @@ appsettings.*.json
 obj/
 bin/
 
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 .vscode/
@@ -15,7 +16,6 @@ bin/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-
 
 # Files built by Visual Studio
 *_i.c
@@ -102,3 +102,5 @@ frontend/package-*.json
 .DS_Store
 .AppleDouble
 .LSOverride
+Migrations/
+

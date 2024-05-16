@@ -4,6 +4,7 @@ using Ecommerce.Core.src.Entities;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 
 namespace Ecommerce.Service.src.Service
 {
@@ -19,7 +20,7 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<ProductImageReadDto> UpdateImageUrlAsync(Guid imageId, string newUrl)
         {
-            var productImage = await _productImageRepository.GetByIdAsync(imageId) ?? throw new KeyNotFoundException("Product image not found");
+            var productImage = await _productImageRepository.GetByIdAsync(imageId) ?? throw CustomExeption.NotFoundException("Product Image not found");
             productImage.UpdateUrl(newUrl);
             await _productImageRepository.UpdateAsync(productImage);
             return _mapper.Map<ProductImageReadDto>(productImage);

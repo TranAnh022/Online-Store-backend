@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controller.src.Controller
 {
-    [Route("api/v1/product/productImage")]
+    [Route("api/v1/product/productImages")]
     public class ProductImageController : ControllerBase
     {
         private readonly IProductImageService _productImageService;
@@ -17,57 +17,36 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProductImageReadDto>> GetAllProduct([FromQuery] QueryOptions options)
+        public async Task<IActionResult> GetAllProduct([FromQuery] QueryOptions options)
         {
-            return await _productImageService.GetAllAsync(options);
+            return Ok(await _productImageService.GetAllAsync(options));
         }
 
         [HttpGet("{productImageId}")]
-        public async Task<ProductImageReadDto> GetProductImageByIdAsync([FromRoute] Guid productImageId)
+        public async Task<IActionResult> GetProductImageByIdAsync([FromRoute] Guid productImageId)
         {
-            try
-            {
-                return await _productImageService.GetOneByIdAsync(productImageId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+              return Ok(await _productImageService.GetOneByIdAsync(productImageId));
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ProductImageReadDto> CreateImage(ProductImageCreateDto img)
+        public async Task<IActionResult> CreateImage(ProductImageCreateDto img)
         {
-            return await _productImageService.CreateOneAsync(img);
+            return Ok(await _productImageService.CreateOneAsync(img));
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{productImageId}")]
-        public async Task<ProductImageReadDto> UpdateProductImageByIdAsync([FromRoute] Guid productImageId, [FromBody] ProductImageUpdateDto productImageUpdateDto)
+        public async Task<IActionResult> UpdateProductImageByIdAsync([FromRoute] Guid productImageId, [FromBody] ProductImageUpdateDto productImageUpdateDto)
         {
-            try
-            {
-                return await _productImageService.UpdateOneAsync(productImageId, productImageUpdateDto);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return Ok(await _productImageService.UpdateOneAsync(productImageId, productImageUpdateDto));
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{productImageId}")]
-        public async Task<bool> DeleteProductByIdAsync([FromRoute] Guid productImageId)
+        public async Task<IActionResult> DeleteProductByIdAsync([FromRoute] Guid productImageId)
         {
-            try
-            {
-                return await _productImageService.DeleteOneAsync(productImageId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return Ok(await _productImageService.DeleteOneAsync(productImageId));
         }
     }
 }

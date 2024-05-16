@@ -5,7 +5,7 @@ using Ecommerce.Core.src.ValueObjects;
 
 namespace Ecommerce.Core.src.Interfaces
 {
-    public interface IUserRepository : IBaseRepository<User, UserQueryOptions>
+    public interface IUserRepository : IBaseRepository<User, QueryOptions>
     {
         Task<bool> ResetPasswordAsync(Guid userId, string newPassword);
 

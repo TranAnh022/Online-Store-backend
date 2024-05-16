@@ -50,8 +50,8 @@ namespace Ecommerce.Test.src.UnitTests.Service
             // Arrange
             var users = new List<User> { new User { Name = "John" }, new User { Name = "Jane" } };
             var userReadDtos = new List<UserReadDto> { new UserReadDto { Name = "John" }, new UserReadDto { Name = "Jane" } };
-            var options = new UserQueryOptions { Search = "John", Page = 1, PageSize = 2, SortBy = "Name", SortOrder = "asc" };
-            _mockUserRepository.Setup(r => r.ListAsync(It.IsAny<UserQueryOptions>())).ReturnsAsync(users);
+            var options = new QueryOptions { Search = "John", Page = 1, PageSize = 2, SortBy = "Name" };
+            _mockUserRepository.Setup(r => r.ListAsync(It.IsAny<QueryOptions>())).ReturnsAsync(users);
             _mockMapper.Setup(m => m.Map<IEnumerable<UserReadDto>>(It.IsAny<IEnumerable<User>>())).Returns(userReadDtos);
 
             // Act
@@ -59,7 +59,7 @@ namespace Ecommerce.Test.src.UnitTests.Service
 
             // Assert
             Assert.Equal(2, result.Count());
-            _mockUserRepository.Verify(r => r.ListAsync(It.IsAny<UserQueryOptions>()), Times.Once);
+            _mockUserRepository.Verify(r => r.ListAsync(It.IsAny<QueryOptions>()), Times.Once);
         }
 
         [Fact]

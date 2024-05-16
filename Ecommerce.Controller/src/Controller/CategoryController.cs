@@ -32,17 +32,9 @@ namespace Ecommerce.Controller.src.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryReadDto>> GetCategoryById([FromRoute] Guid id)
         {
-            try
-            {
-                var category = await _categoryService.GetOneByIdAsync(id);
-                if (category == null)
-                    return NotFound();
-                return Ok(category);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var category = await _categoryService.GetOneByIdAsync(id);
+            return Ok(category);
+
         }
 
         // POST: api/v1/categories
@@ -51,15 +43,8 @@ namespace Ecommerce.Controller.src.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoryReadDto>> CreateCategory(CategoryCreateDto categoryCreateDto)
         {
-            try
-            {
-                var createdCategory = await _categoryService.CreateOneAsync(categoryCreateDto);
-                return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id }, createdCategory);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var createdCategory = await _categoryService.CreateOneAsync(categoryCreateDto);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id }, createdCategory);
         }
 
         // PUT: api/v1/categories/{id}
@@ -68,17 +53,8 @@ namespace Ecommerce.Controller.src.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryUpdateDto categoryUpdateDto)
         {
-            try
-            {
-                var updatedCategory = await _categoryService.UpdateOneAsync(id, categoryUpdateDto);
-                if (updatedCategory == null)
-                    return NotFound();
-                return Ok(updatedCategory);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var updatedCategory = await _categoryService.UpdateOneAsync(id, categoryUpdateDto);
+            return Ok(updatedCategory);
         }
 
         // DELETE: api/v1/categories/{id}
@@ -87,17 +63,8 @@ namespace Ecommerce.Controller.src.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
-            try
-            {
-                var success = await _categoryService.DeleteOneAsync(id);
-                if (!success)
-                    return NotFound();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var success = await _categoryService.DeleteOneAsync(id);
+            return Ok(success);
         }
 
         // PATCH: api/v1/categories/{id}/updated-name
@@ -106,15 +73,8 @@ namespace Ecommerce.Controller.src.Controllers
         [HttpPatch("{id:guid}/updated-name")]
         public async Task<ActionResult<CategoryReadDto>> UpdateCategoryName([FromRoute] Guid id, [FromBody] CategoryUpdateDto categoryUpdateDto)
         {
-            try
-            {
-                var updatedCategory = await _categoryService.UpdateCategoryNameAsync(id, categoryUpdateDto.Name!);
-                return Ok(updatedCategory);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var updatedCategory = await _categoryService.UpdateCategoryNameAsync(id, categoryUpdateDto.Name!);
+            return Ok(updatedCategory);
         }
 
         // PATCH: api/v1/categories/{id}/updated-image
@@ -123,15 +83,8 @@ namespace Ecommerce.Controller.src.Controllers
         [HttpPatch("{id:guid}/updated-image")]
         public async Task<ActionResult<CategoryReadDto>> UpdateCategoryImage([FromRoute] Guid id, [FromBody] CategoryUpdateDto categoryUpdateDto)
         {
-            try
-            {
-                var updatedCategory = await _categoryService.UpdateCategoryImageAsync(id, categoryUpdateDto.Image!);
-                return Ok(updatedCategory);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var updatedCategory = await _categoryService.UpdateCategoryImageAsync(id, categoryUpdateDto.Image!);
+            return Ok(updatedCategory);
         }
     }
 }

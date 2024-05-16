@@ -61,9 +61,9 @@ namespace Ecommerce.WebAPI.src.Repo
             if (options != null)
             {
                 // Filter by search title
-                if (!string.IsNullOrEmpty(options.Title))
+                if (!string.IsNullOrEmpty(options.Search))
                 {
-                    query = query.Where(p => p.Title.ToLower().Contains(options.Title.ToLower()));
+                    query = query.Where(p => p.Title.ToLower().Contains(options.Search.ToLower()));
                 }
                 // Filter by price range
                 if (options.MinPrice.HasValue)
@@ -103,6 +103,6 @@ namespace Ecommerce.WebAPI.src.Repo
             .SingleOrDefaultAsync(p => p.Id == entity.Id);
         }
 
-       
+
     }
 }

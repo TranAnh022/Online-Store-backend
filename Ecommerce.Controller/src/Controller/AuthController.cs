@@ -21,16 +21,16 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [HttpPost("login")]
-        public async Task<string> LoginAsync([FromBody] UserCredential userCredential)
+        public async Task<ActionResult<string>> LoginAsync([FromBody] UserCredential userCredential)
         {
-            return await _authService.LogInAsync(userCredential);
+            return Ok(await _authService.LogInAsync(userCredential));
         }
 
         [HttpPost("authenticate")]
-        public async Task<User> AuthenticateUser(string token)
+        public async Task<ActionResult<User>> AuthenticateUser(string token)
         {
             var data = await _authService.AuthenticateUserAsync(token);
-            return data;
+            return Ok(data);
         }
     }
 }

@@ -5,7 +5,7 @@ using Ecommerce.Service.Service;
 
 namespace Ecommerce.Service.src.ServiceAbstract
 {
-    public interface IUserService : IBaseService<UserReadDto, UserCreateDto, UserUpdateDto, UserQueryOptions>
+    public interface IUserService : IBaseService<UserReadDto, UserCreateDto, UserUpdateDto, QueryOptions>
     {
         // Adds a method to update the user's password
         Task<bool> UpdatePasswordAsync(Guid userId, string newPassword);

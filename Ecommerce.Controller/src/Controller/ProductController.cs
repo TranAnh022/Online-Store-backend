@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controller.src.Controller
 {
-    [Route("api/v1/product")]
+    [Route("api/v1/products")]
     public class ProductController : ControllerBase
     {
 
@@ -33,61 +33,31 @@ namespace Ecommerce.Controller.src.Controller
         [HttpGet("{productId}")]
         public async Task<ProductReadDto> GetProductByIdAsync([FromRoute] Guid productId)
         {
-            try
-            {
-                return await _productService.GetOneByIdAsync(productId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+
+            return await _productService.GetOneByIdAsync(productId);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost()]
         public async Task<ProductReadDto> CreateProductAsync([FromForm] ProductCreateDto productCreateDto)
         {
-            try
-            {
-                return await _productService.CreateOneAsync(productCreateDto);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return await _productService.CreateOneAsync(productCreateDto);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{productId}")]
         public async Task<ProductReadDto> UpdateProductByIdAsync([FromRoute] Guid productId, [FromBody] ProductUpdateDto productUpdateDto)
         {
-            try
-            {
-                return await _productService.UpdateOneAsync(productId, productUpdateDto);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+
+            return await _productService.UpdateOneAsync(productId, productUpdateDto);
+
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{productId}")]
         public async Task<bool> DeleteProductByIdAsync([FromRoute] Guid productId)
         {
-            try
-            {
-                return await _productService.DeleteOneAsync(productId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return await _productService.DeleteOneAsync(productId);
         }
-
-
-
-
-
     }
 }

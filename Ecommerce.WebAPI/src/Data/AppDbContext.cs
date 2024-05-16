@@ -49,7 +49,6 @@ namespace Ecommerce.WebAPI.src.Data
             {
                 entity.ToTable("orders");
                 entity.HasKey(o => o.Id).HasName("orders_pkey");
-                entity.Property(o => o.TotalPrice).HasPrecision(18, 2);
                 entity.ToTable("orders").HasCheckConstraint("total_price_check", "total_price > 0");
                 entity.HasOne(o => o.User).WithMany(u => u.Orders).HasForeignKey(o => o.UserId).OnDelete(DeleteBehavior.SetNull);
                 entity.Property(o => o.CreatedAt).HasDefaultValueSql("now()");

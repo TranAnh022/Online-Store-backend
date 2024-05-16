@@ -34,7 +34,8 @@ namespace Ecommerce.Service.src.DTO
         public decimal? Price { get; set; }
         public Guid? CategoryId { get; set; }
         public int? Inventory { get; set; }
-        public IEnumerable<string>? Images { get; set; }
+        public IEnumerable<string>? ImageUrls { get; set; }
+        public IEnumerable<IFormFile>? ImageFiles { get; set; }
     }
 
     public class TopProducDto

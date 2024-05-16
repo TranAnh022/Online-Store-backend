@@ -7,7 +7,6 @@ namespace Ecommerce.Core.src.Entities.OrderAggregate
     {
         public Guid UserId { get; set; }
         public OrderStatus Status { get; set; }
-        public decimal TotalPrice { get; set; }
 
         // Using a private collection field, better for DDD Aggregate's encapsulation
         // so OrderItems cannot be added from "outside the Aggregate" directly to the collection,
@@ -25,7 +24,6 @@ namespace Ecommerce.Core.src.Entities.OrderAggregate
             Id = Guid.NewGuid();
             UserId = userId;
             Status = OrderStatus.Processing;
-            TotalPrice = 0;
             _orderItems = new HashSet<OrderItem>(new OrderItemComparer());
         }
 
@@ -67,9 +65,9 @@ namespace Ecommerce.Core.src.Entities.OrderAggregate
         }
 
         // Method to calculate the total price of the order
-        public void CalculateTotalPrice()
+        public decimal CalculateTotalPrice()
         {
-            TotalPrice = _orderItems!.Sum(item => item.Price * item.Quantity);
+            return _orderItems!.Sum(item => item.Price * item.Quantity);
         }
 
     }

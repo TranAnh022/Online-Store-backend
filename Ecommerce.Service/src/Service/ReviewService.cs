@@ -4,6 +4,7 @@ using Ecommerce.Core.src.Entities;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 
 namespace Ecommerce.Service.src.Service
 {
@@ -28,7 +29,7 @@ namespace Ecommerce.Service.src.Service
 
             if (!userExists || !productExists)
             {
-                throw new KeyNotFoundException("User or product not found");
+                throw CustomExeption.NotFoundException("User or Product not found");
             }
 
             // Map DTO to Review entity, and set user and product IDs
@@ -40,7 +41,7 @@ namespace Ecommerce.Service.src.Service
             var result = await _reviewRepository.AddAsync(newReview);
             return _mapper.Map<ReviewReadDto>(result);
         }
-    
+
         public async Task<IEnumerable<ReviewReadDto>> GetReviewsByProductIdAsync(Guid productId)
         {
             var reviews = await _reviewRepository.GetReviewsByProductIdAsync(productId);
