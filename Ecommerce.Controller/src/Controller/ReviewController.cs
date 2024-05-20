@@ -1,6 +1,7 @@
 using Ecommerce.Core.src.Common;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +13,12 @@ namespace Ecommerce.Controller.src.Controller
     {
         private readonly IReviewService _reviewService;
 
-        public ReviewController(IReviewService reviewService)
+        private readonly IAuthorizationService _authorizationService;
+
+        public ReviewController(IReviewService reviewService, IAuthorizationService authorizationService)
         {
             _reviewService = reviewService;
+            _authorizationService = authorizationService;
         }
 
         // GET: api/v1/reviews
@@ -61,8 +65,29 @@ namespace Ecommerce.Controller.src.Controller
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReview([FromRoute] Guid id, [FromBody] ReviewUpdateDto reviewUpdateDto)
         {
-            var updatedReview = await _reviewService.UpdateOneAsync(id, reviewUpdateDto);
-            return Ok(updatedReview);
+            var foundReview = _reviewService.GetOneByIdAsync(id);
+            if (foundReview is null)
+            {
+                throw CustomExeption.NotFoundException("Review not found");
+            }
+            else
+            {
+                var authorizationResult = _authorizationService
+                .AuthorizeAsync(HttpContext.User, foundReview, "AdminOrOwnerReview")
+                .GetAwaiter()
+                .GetResult();
+
+
+                if (authorizationResult.Succeeded)
+                {
+                    return Ok(await _reviewService.UpdateOneAsync(id, reviewUpdateDto));
+                }
+                else
+                {
+                    return new ForbidResult();
+                }
+            }
+
         }
 
         // DELETE: api/v1/reviews/{id}
@@ -71,9 +96,28 @@ namespace Ecommerce.Controller.src.Controller
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] Guid id)
         {
-            var result = await _reviewService.DeleteOneAsync(id);
-            return Ok(result);
-        }
+            var foundReview = _reviewService.GetOneByIdAsync(id);
+            if (foundReview is null)
+            {
+                throw CustomExeption.NotFoundException("Review not found");
+            }
+            else
+            {
+                var authorizationResult = _authorizationService
+                .AuthorizeAsync(HttpContext.User, foundReview, "AdminOrOwnerReview")
+                .GetAwaiter()
+                .GetResult();
 
+
+                if (authorizationResult.Succeeded)
+                {
+                    return Ok(await _reviewService.DeleteOneAsync(id));
+                }
+                else
+                {
+                    return new ForbidResult();
+                }
+            }
+        }
     }
 }

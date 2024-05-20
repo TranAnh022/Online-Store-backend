@@ -31,11 +31,11 @@ namespace Ecommerce.WebAPI.src.Repo
                 .SelectMany(o => o.OrderItems) // Flatten the OrderItems from multiple Orders into a single sequence
                 .GroupBy(oi => new { oi.ProductSnapshot.ProductId, oi.ProductSnapshot.Title })
                 .Select(g => new
-            {
-                ProductId = g.Key.ProductId,
-                Title = g.Key.Title,
-                TotalQuantityPurchased = g.Sum(oi => oi.Quantity)
-            })
+                {
+                    ProductId = g.Key.ProductId,
+                    Title = g.Key.Title,
+                    TotalQuantityPurchased = g.Sum(oi => oi.Quantity)
+                })
                 .OrderByDescending(x => x.TotalQuantityPurchased)
                 .Take(topNumber)
                 .ToListAsync();
@@ -79,7 +79,7 @@ namespace Ecommerce.WebAPI.src.Repo
                 // Sorting
                 if (!string.IsNullOrEmpty(options.SortBy))
                 {
-                    query = query.Where(p => p.Category.ToString().ToLower() == options.SortBy.ToLower());
+                    query = query.Where(p => p.Category.Id.ToString().ToLower() == options.SortBy);
                 }
 
                 // Pagination
@@ -101,6 +101,14 @@ namespace Ecommerce.WebAPI.src.Repo
             .Include(p => p.Category)
             .Include(p => p.Images)
             .SingleOrDefaultAsync(p => p.Id == entity.Id);
+        }
+
+        public override async Task<Product> GetByIdAsync(Guid id)
+        {
+            return await _data
+             .Include(p => p.Category)
+             .Include(p => p.Images)
+             .SingleOrDefaultAsync(p => p.Id == id);
         }
 
 

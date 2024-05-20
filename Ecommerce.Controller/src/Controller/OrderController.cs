@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
+using Ecommerce.Service.src.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,14 @@ namespace Ecommerce.Controller.src.Controller
     {
         private readonly IOrderService _orderService;
 
+        private readonly IAuthorizationService _authorizationService;
+
         private readonly IOrderItemService _orderItemService;
-        public OrderController(IOrderService orderService, IOrderItemService orderItemService)
+        public OrderController(IOrderService orderService, IOrderItemService orderItemService, IAuthorizationService authorizationService)
         {
             _orderService = orderService;
             _orderItemService = orderItemService;
-
+            _authorizationService = authorizationService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -49,7 +52,7 @@ namespace Ecommerce.Controller.src.Controller
         public async Task<ActionResult<OrderReadDto>> UpdateOrderByIdAsync([FromRoute] Guid id, [FromBody] OrderUpdateDto orderUpdateDto)
         {
 
-                return Ok(await _orderService.UpdateOneAsync(id, orderUpdateDto));
+            return Ok(await _orderService.UpdateOneAsync(id, orderUpdateDto));
 
         }
 
@@ -77,7 +80,27 @@ namespace Ecommerce.Controller.src.Controller
         [HttpPatch("cancel-order/{id}")]
         public async Task<IActionResult> CancelOrder([FromRoute] Guid id)
         {
-            return Ok(await _orderService.CancelOrderAsync(id));
+            var foundOrder = await _orderService.GetOneByIdAsync(id);
+            if (foundOrder is null)
+            {
+                throw CustomExeption.NotFoundException("Order not found");
+            }
+            else
+            {
+                var authorizationResult = _authorizationService
+               .AuthorizeAsync(HttpContext.User, foundOrder, "AdminOrOwnerOrder")
+               .GetAwaiter()
+               .GetResult();
+
+                if (authorizationResult.Succeeded)
+                {
+                    return Ok(await _orderService.CancelOrderAsync(id));
+                }
+                else
+                {
+                    return new ForbidResult();
+                }
+            }
         }
 
         [HttpGet("orderItem")]

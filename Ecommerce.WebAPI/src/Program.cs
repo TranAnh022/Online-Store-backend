@@ -84,9 +84,10 @@ builder.Services.AddCors(options =>
             options.AddPolicy("AllowAllOrigins",
                 builder =>
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyHeader()
-                           .AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:3000") // Add specific origins here
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
         });
 
@@ -135,6 +136,10 @@ builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 
 //Cloudinary
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+// Register IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 // Add authentication instructions
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(

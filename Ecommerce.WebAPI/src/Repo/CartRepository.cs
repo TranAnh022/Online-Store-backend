@@ -1,4 +1,5 @@
 using Ecommerce.Core.src.Common;
+using Ecommerce.Core.src.Entities;
 using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.src.DTO;
@@ -22,7 +23,7 @@ namespace Ecommerce.WebAPI.src.Repo
             // Load the cart associated with the user, including its cart items and products
             var cart = await _databaseContext.Carts
                                              .Include(c => c.CartItems)
-                                             .ThenInclude(ci => ci.Product)
+                                             .ThenInclude(ci => ci.Product).ThenInclude(p => p.Images)
                                              .FirstOrDefaultAsync(c => c.UserId == userId);
 
             // If the cart doesn't exist, create a new one
@@ -65,9 +66,9 @@ namespace Ecommerce.WebAPI.src.Repo
             return cart;
         }
 
-        public async Task<bool> RemoveCartItem(Guid productId, int quantity, Guid userId)
+        public async Task<Cart> RemoveCartItem(Guid productId, int quantity, Guid userId)
         {
-            var cart = await _data.Include(c => c.CartItems).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(x => x.UserId == userId);
+            var cart = await _data.Include(c => c.CartItems).ThenInclude(ci => ci.Product).ThenInclude(p => p.Images).FirstOrDefaultAsync(x => x.UserId == userId);
             if (cart == null) throw new Exception("Cart not found");
 
             var product = await _databaseContext.Products.FindAsync(productId);
@@ -76,14 +77,19 @@ namespace Ecommerce.WebAPI.src.Repo
             cart.RemoveItem(product, quantity);
 
             await _databaseContext.SaveChangesAsync();
-            return true;
+            return cart;
         }
 
         public async Task<Cart> GetCartByUserIdAsync(Guid userId)
         {
             return await _data
-                 .Include(c => c.CartItems!)
-                 .FirstOrDefaultAsync(c => c.UserId == userId) ?? throw new InvalidOperationException("Cart not found"); ;
+                .Include(c => c.CartItems!)
+                    .ThenInclude(ci => ci.Product)
+                        .ThenInclude(p => p.Category)
+                .Include(c => c.CartItems!)
+                    .ThenInclude(ci => ci.Product)
+                        .ThenInclude(p => p.Images)
+                .FirstOrDefaultAsync(c => c.UserId == userId) ?? throw new InvalidOperationException("Cart not found");
         }
 
         public async Task<IEnumerable<Cart>> ListAsync(QueryOptions options)
@@ -98,5 +104,7 @@ namespace Ecommerce.WebAPI.src.Repo
             }
             return await query.ToListAsync();
         }
+
+
     }
 }

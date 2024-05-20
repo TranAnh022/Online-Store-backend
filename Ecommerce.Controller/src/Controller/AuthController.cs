@@ -23,7 +23,8 @@ namespace Ecommerce.Controller.src.Controller
         [HttpPost("login")]
         public async Task<ActionResult<string>> LoginAsync([FromBody] UserCredential userCredential)
         {
-            return Ok(await _authService.LogInAsync(userCredential));
+            var token =await _authService.LogInAsync(userCredential);
+            return token;
         }
 
         [HttpPost("authenticate")]

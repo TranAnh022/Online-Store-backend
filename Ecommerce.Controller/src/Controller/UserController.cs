@@ -67,7 +67,7 @@ namespace Ecommerce.Controller.src.Controller
             }
             else
             {
-                return null;
+                return new ForbidResult();
             }
         }
 
@@ -83,9 +83,12 @@ namespace Ecommerce.Controller.src.Controller
             .GetResult();
             if (authorizationResult.Succeeded)
             {
-                await _userService.DeleteOneAsync(userId);
+                return Ok(await _userService.DeleteOneAsync(userId));
             }
-            return Ok(true);
+            else
+            {
+                return new ForbidResult();
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Ecommerce.Service.src.DTO
     {
         public Guid Id { get; set; }
         public Guid CartId { get; set; }
-        public Guid ProductId { get; set; }
+        public ProductReadDto Product { get; set; }
         public int Quantity { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

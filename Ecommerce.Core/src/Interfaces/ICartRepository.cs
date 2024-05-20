@@ -9,7 +9,7 @@ namespace Ecommerce.Core.src.Interfaces
         Task<Cart> AddCartItemToCart(Guid productId,int quantity,Guid userId);
 
         // Remove a specific item from the cart
-        Task<bool> RemoveCartItem(Guid productId, int quantity, Guid userId);
+        Task<Cart> RemoveCartItem(Guid productId, int quantity, Guid userId);
 
         Task<Cart> GetCartByUserIdAsync(Guid userId);
     }

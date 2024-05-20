@@ -23,7 +23,7 @@ namespace Ecommerce.Service.src.Service
             return _mapper.Map<IEnumerable<CartReadDto>>(carts);
         }
 
-        public async Task<CartReadDto> AddItemToCartAsync(Guid productId,int quantity,Guid userId)
+        public async Task<CartReadDto> AddItemToCartAsync(Guid productId, int quantity, Guid userId)
         {
 
             var cart = await _cartRepository.AddCartItemToCart(productId, quantity, userId);
@@ -36,10 +36,10 @@ namespace Ecommerce.Service.src.Service
             return _mapper.Map<CartReadDto>(cart);
         }
 
-        public async Task<bool> RemoveItemFromCartAsync(Guid productId, int quantity, Guid userId)
+        public async Task<CartReadDto> RemoveItemFromCartAsync(Guid productId, int quantity, Guid userId)
         {
             var cart = await _cartRepository.RemoveCartItem(productId, quantity, userId);
-            return cart;
+            return _mapper.Map<CartReadDto>(cart);
         }
     }
 }

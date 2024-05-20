@@ -11,7 +11,7 @@ namespace Ecommerce.Service.src.ServiceAbstract
 
         Task<CartReadDto> AddItemToCartAsync(Guid productId,int quantity,Guid userId);
 
-        Task<bool> RemoveItemFromCartAsync(Guid productId, int quantity, Guid userId);
+        Task<CartReadDto> RemoveItemFromCartAsync(Guid productId, int quantity, Guid userId);
 
 
 

@@ -25,9 +25,9 @@ namespace Ecommerce.Controller.src.Controller
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IEnumerable<ProductReadDto>> GetAllProduct([FromQuery] ProductQueryOptions options)
+        public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetAllProduct([FromQuery] ProductQueryOptions options)
         {
-            return await _productService.GetAllAsync(options);
+            return Ok(await _productService.GetAllAsync(options));
         }
 
         [HttpGet("{productId}")]
@@ -38,6 +38,7 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [Authorize(Roles = "Admin")]
+        [Consumes("multipart/form-data")]
         [HttpPost()]
         public async Task<ProductReadDto> CreateProductAsync([FromForm] ProductCreateDto productCreateDto)
         {

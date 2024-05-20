@@ -31,16 +31,16 @@ namespace Ecommerce.Controller.src.Controller
             return Ok(carts);
         }
 
-        // GET: api/v1/carts/{id}
+        // GET: api/v1/carts/userCart
         // Get cart by id
-        [HttpGet("{id}")]
+        [HttpGet("userCart")]
         [Authorize]
-        public async Task<IActionResult> GetCart([FromRoute] Guid id)
+        public async Task<IActionResult> GetCart()
         {
-
-            var cart = await _cartService.GetOneByIdAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            Console.WriteLine($"userID {userId}");
+            var cart = await _cartService.GetCartByUserIdAsync(Guid.Parse(userId));
             return Ok(cart);
-
         }
 
         // Cart items endpoints
@@ -68,10 +68,10 @@ namespace Ecommerce.Controller.src.Controller
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> RemoveCartItem([FromBody] Guid productId, int quantity)
+        public async Task<IActionResult> RemoveCartItem([FromBody] CartItemCreateDto cartItemCreateDto)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var cart = await _cartService.RemoveItemFromCartAsync(productId, quantity, Guid.Parse(userId));
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var cart = await _cartService.RemoveItemFromCartAsync(cartItemCreateDto.ProductId, cartItemCreateDto.Quantity, Guid.Parse(userId));
             return Ok(cart);
         }
     }

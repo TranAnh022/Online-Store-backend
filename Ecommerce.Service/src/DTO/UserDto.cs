@@ -46,5 +46,12 @@ namespace Ecommerce.Service.DTO
     {
         public UserRole NewRole { get; set; }
     }
+
+    public class UserLoginDto
+    {
+        public string Email { get; set; }
+        public string Token { get; set; }
+        public CartReadDto Basket { get; set; }
+    }
 }
 

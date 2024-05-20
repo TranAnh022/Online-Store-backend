@@ -11,13 +11,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.WebAPI.src.Repo
 {
-    public class OrderRepo : BaseRepo<Order,QueryOptions>,IOrderRepository
+    public class OrderRepo : BaseRepo<Order, QueryOptions>, IOrderRepository
     {
 
         private readonly DbSet<ProductSnapshot> _productSnapshots;
         private readonly DbSet<OrderItem> _orderItems;
         private readonly ICartRepository _cartRepository;
-        public OrderRepo(AppDbContext context, ICartRepository cartRepository): base(context)
+        public OrderRepo(AppDbContext context, ICartRepository cartRepository) : base(context)
         {
 
             _orderItems = context.OrderItems;
@@ -80,7 +80,7 @@ namespace Ecommerce.WebAPI.src.Repo
             {
                 query = query.Skip((queryOptions.Page.Value - 1) * queryOptions.PageSize.Value).Take(queryOptions.PageSize.Value);
             }
-            return await query.Include(o=>o.OrderItems).ThenInclude(oi=>oi.ProductSnapshot).ToListAsync();
+            return await query.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).ToListAsync();
         }
     }
 }
