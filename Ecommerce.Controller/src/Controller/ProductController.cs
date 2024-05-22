@@ -46,8 +46,9 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [Authorize(Roles = "Admin")]
+        [Consumes("multipart/form-data")]
         [HttpPut("{productId}")]
-        public async Task<ProductReadDto> UpdateProductByIdAsync([FromRoute] Guid productId, [FromBody] ProductUpdateDto productUpdateDto)
+        public async Task<ProductReadDto> UpdateProductByIdAsync([FromRoute] Guid productId, [FromForm] ProductUpdateDto productUpdateDto)
         {
 
             return await _productService.UpdateOneAsync(productId, productUpdateDto);

@@ -7,5 +7,7 @@ namespace Ecommerce.Service.src.ServiceAbstract
     public interface IReviewService : IBaseService<ReviewReadDto, ReviewCreateDto, ReviewUpdateDto, QueryOptions>
     {
         Task<IEnumerable<ReviewReadDto>> GetReviewsByProductIdAsync(Guid productId);
+
+        Task<ReviewReadDto> CreateOneAsync(ReviewCreateDto reviewCreateDto, Guid userId);
     }
 }

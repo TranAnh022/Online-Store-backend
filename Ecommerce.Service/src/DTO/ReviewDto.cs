@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ecommerce.Core.src.Entities;
+using Ecommerce.Service.DTO;
 
 namespace Ecommerce.Service.src.DTO
 {
     public class ReviewReadDto
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public UserReadDto User { get; set; }
         public Guid ProductId { get; set; }
         public int Rating { get; set; }
         public string? Context { get; set; }
@@ -18,7 +20,6 @@ namespace Ecommerce.Service.src.DTO
 
     public class ReviewCreateDto
     {
-        public Guid UserId { get; set; }
         public Guid ProductId { get; set; }
         public int Rating { get; set; }
         public string? Context { get; set; }
@@ -28,5 +29,10 @@ namespace Ecommerce.Service.src.DTO
     {
         public int? Rating { get; set; }
         public string? Context { get; set; }
+    }
+
+    public class ReviewDeleteDto
+    {
+        public Guid Id { get; set; }
     }
 }

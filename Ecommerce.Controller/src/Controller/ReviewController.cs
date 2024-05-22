@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstract;
@@ -42,11 +43,12 @@ namespace Ecommerce.Controller.src.Controller
 
         // POST: api/v1/reviews
         // Adds a new product review
-        [Authorize(Roles = "User")]
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ReviewReadDto>> AddReview([FromBody] ReviewCreateDto reviewCreateDto)
         {
-            var createdReview = await _reviewService.CreateOneAsync(reviewCreateDto);
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var createdReview = await _reviewService.CreateOneAsync(reviewCreateDto, userId);
             return CreatedAtAction(nameof(GetReviewById), new { id = createdReview.Id }, createdReview);
         }
 
@@ -61,11 +63,11 @@ namespace Ecommerce.Controller.src.Controller
 
         // PUT: api/v1/reviews/{id}
         // Updates a specific review
-        [Authorize(Roles = "User")]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReview([FromRoute] Guid id, [FromBody] ReviewUpdateDto reviewUpdateDto)
         {
-            var foundReview = _reviewService.GetOneByIdAsync(id);
+            var foundReview = await _reviewService.GetOneByIdAsync(id);
             if (foundReview is null)
             {
                 throw CustomExeption.NotFoundException("Review not found");
@@ -92,11 +94,12 @@ namespace Ecommerce.Controller.src.Controller
 
         // DELETE: api/v1/reviews/{id}
         // Deletes a specific review by ID
-        [Authorize(Roles = "User")]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] Guid id)
         {
-            var foundReview = _reviewService.GetOneByIdAsync(id);
+            var foundReview = await _reviewService.GetOneByIdAsync(id);
+
             if (foundReview is null)
             {
                 throw CustomExeption.NotFoundException("Review not found");

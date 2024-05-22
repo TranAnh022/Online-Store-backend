@@ -133,6 +133,12 @@ namespace Ecommerce.Service.src.Service
                 product.Price = updateDto.Price.Value;
             }
 
+            if (!string.IsNullOrEmpty(updateDto.Description))
+            {
+
+                product.Description = updateDto.Description;
+            }
+
             if (updateDto.CategoryId != null)
             {
 
@@ -161,11 +167,11 @@ namespace Ecommerce.Service.src.Service
             }
 
             //Update producy imageFile
-            if(updateDto.ImageFiles != null && updateDto.ImageFiles.Any())
+            if (updateDto.ImageFiles != null && updateDto.ImageFiles.Any())
             {
                 var ImageProductList = await _productImageRepository.GetByProductIdAsync(product.Id);
 
-                foreach(var imageFile in ImageProductList)
+                foreach (var imageFile in ImageProductList)
                 {
                     await _cloudinaryService.DeletePhoto(imageFile.Id);
                     await _productImageRepository.DeleteAsync(imageFile.Id);

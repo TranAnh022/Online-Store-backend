@@ -21,10 +21,11 @@ namespace Ecommerce.Service.src.Service
             _productRepository = productRepository;
             _userRepository = userRepository;
         }
-        public async Task<ReviewReadDto> CreateOneAsync(Guid userId, ReviewCreateDto createDto)
+        public async Task<ReviewReadDto> CreateOneAsync(ReviewCreateDto createDto, Guid userId)
         {
             // Validate existence of user and product using their IDs
             var userExists = await _userRepository.ExistsAsync(userId);
+            
             var productExists = await _productRepository.ExistsAsync(createDto.ProductId);
 
             if (!userExists || !productExists)
