@@ -22,8 +22,9 @@ namespace Ecommerce.WebAPI.src.Repo
         {
             // Load the cart associated with the user, including its cart items and products
             var cart = await _databaseContext.Carts
-                                             .Include(c => c.CartItems)
-                                             .ThenInclude(ci => ci.Product).ThenInclude(p => p.Images)
+                                             .Include(c => c.CartItems!)
+                                                .ThenInclude(ci => ci.Product)
+                                                    .ThenInclude(p => p.Images)
                                              .FirstOrDefaultAsync(c => c.UserId == userId);
 
             // If the cart doesn't exist, create a new one
@@ -63,7 +64,14 @@ namespace Ecommerce.WebAPI.src.Repo
             // Save changes to the database
             await _databaseContext.SaveChangesAsync();
 
-            return cart;
+            return await _data
+                .Include(c => c.CartItems!)
+                    .ThenInclude(ci => ci.Product)
+                        .ThenInclude(p => p.Category)
+                .Include(c => c.CartItems!)
+                    .ThenInclude(ci => ci.Product)
+                        .ThenInclude(p => p.Images)
+                .FirstOrDefaultAsync(c => c.UserId == userId) ?? throw new InvalidOperationException("Cart not found");
         }
 
         public async Task<Cart> RemoveCartItem(Guid productId, int quantity, Guid userId)

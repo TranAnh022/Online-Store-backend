@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 using Ecommerce.Service.DTO;
 
-namespace Walmad.WebAPI.src.Authorization
+namespace Ecommerce.WebAPI.src.Authorization
 {
     public class AdminOrOwnerAccountHandler : AuthorizationHandler<AdminOrOwnerAccountRequirement, UserReadDto>
     {

@@ -1,15 +1,16 @@
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entities;
 using Ecommerce.Core.src.Interfaces;
+using Ecommerce.Service.src.DTO;
 using Ecommerce.WebAPI.src.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.WebAPI.src.Repo
 {
-    public class ReviewRepository :BaseRepo<Review,QueryOptions>,IReviewRepository
+    public class ReviewRepository : BaseRepo<Review, QueryOptions>, IReviewRepository
     {
 
-        public ReviewRepository(AppDbContext context):base(context)
+        public ReviewRepository(AppDbContext context) : base(context)
         {
         }
         public async Task<IEnumerable<Review>> GetReviewsByProductIdAsync(Guid productId)
@@ -35,7 +36,15 @@ namespace Ecommerce.WebAPI.src.Repo
                 query = query.Skip((options.Page.Value - 1) * options.PageSize.Value).Take(options.PageSize.Value);
             }
 
-            return await query.ToListAsync();
+            return await query.Include(r => r.User).ToListAsync();
         }
+
+        public override async Task<Review> GetByIdAsync(Guid id)
+        {
+            return await _data
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
     }
 }

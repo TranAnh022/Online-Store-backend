@@ -4,7 +4,7 @@ using Ecommerce.Service.src.DTO;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace Walmad.WebAPI.src.Authorization
+namespace Ecommerce.WebAPI.src.Authorization
 {
     public class AdminOrOwnerReviewHandler : AuthorizationHandler<AdminOrOwnerReviewRequirement, ReviewReadDto>
     {
@@ -13,8 +13,9 @@ namespace Walmad.WebAPI.src.Authorization
             var claims = context.User;
             var userRole = claims.FindFirst(c => c.Type == ClaimTypes.Role)!.Value;
             var userId = claims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
-
-            if (userId == review.UserId.ToString() || userRole == UserRole.Admin.ToString())
+            Console.WriteLine($"userID ${userId}");
+            Console.WriteLine($"userrevew ${review.User.Id}");
+            if (userId == review.User.Id.ToString() || userRole == UserRole.Admin.ToString())
             {
                 context.Succeed(requirement);
             }

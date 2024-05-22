@@ -19,8 +19,9 @@ using Microsoft.OpenApi.Models;
 using Ecommerce.Core.src.Entities.CartAggregate;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entities.OrderAggregate;
-using Walmad.WebAPI.src.Authorization;
 using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
+using Ecommerce.WebAPI.src.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -136,6 +137,11 @@ builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 
 //Cloudinary
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+// Resource based auth handlers
+builder.Services.AddSingleton<IAuthorizationHandler, AdminOrOwnerOrderHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, AdminOrOwnerReviewHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, AdminOrOwnerAccountHandler>();
 
 // Register IHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
