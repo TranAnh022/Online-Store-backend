@@ -65,14 +65,14 @@ namespace Ecommerce.Controller.src.Controller
 
         [Authorize]
         [HttpGet("user")]
-        public async Task<ActionResult<IEnumerable<OrderReadDto>>> GetAllOrderByUser()
+        public async Task<ActionResult<IEnumerable<OrderReadDto>>> GetAllOrderByUser([FromQuery] string? status)
         {
 
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                var orders = await _orderService.GetOrdersByUserIdAsync(Guid.Parse(userId));
+            var orders = await _orderService.GetOrdersByUserIdAsync(Guid.Parse(userId),status);
 
-                return Ok(orders);
+            return Ok(orders);
 
         }
 

@@ -23,7 +23,7 @@ namespace Ecommerce.Core.src.Entities.OrderAggregate
 
             Id = Guid.NewGuid();
             UserId = userId;
-            Status = OrderStatus.Processing;
+            Status = OrderStatus.Pending;
             _orderItems = new HashSet<OrderItem>(new OrderItemComparer());
         }
 

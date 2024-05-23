@@ -56,7 +56,8 @@ namespace Ecommerce.Service.src.Shared
             CreateMap<OrderCreateDto, Order>();
             // Only map non-null fields to allow partial updates
             CreateMap<OrderUpdateDto, Order>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-
+            CreateMap<Order, OrderReadDto>()
+                        .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
             // OrderItem mappings
             CreateMap<OrderItem, OrderItemReadDto>();
             CreateMap<OrderItemCreateDto, OrderItem>();

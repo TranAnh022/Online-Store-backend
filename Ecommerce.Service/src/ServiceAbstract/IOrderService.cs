@@ -11,6 +11,6 @@ namespace Ecommerce.Service.src.ServiceAbstract
         Task<bool> CancelOrderAsync(Guid orderId);
         Task<bool> UpdateOrderItemQuantityAsync(Guid orderId, Guid itemId, int quantity);
 
-        Task<IEnumerable<OrderReadDto>> GetOrdersByUserIdAsync(Guid userId);
+        Task<IEnumerable<OrderReadDto>> GetOrdersByUserIdAsync(Guid userId,string? status);
     }
 }

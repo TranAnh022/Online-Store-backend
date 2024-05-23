@@ -64,7 +64,7 @@ namespace Ecommerce.Service.src.Service
 
             var orderMapDto = _mapper.Map<OrderReadDto>(order);
 
-            orderMapDto.TotalPrice= order.CalculateTotalPrice();
+            orderMapDto.TotalPrice = order.CalculateTotalPrice();
 
             await _orderRepository.AddAsync(order);
 
@@ -79,18 +79,10 @@ namespace Ecommerce.Service.src.Service
             {
                 throw CustomExeption.NotFoundException("Order not found");
             }
-            else
-            {
-                TimeSpan timeDifference = currentDate - foundOrder.CreatedAt;
-                if (timeDifference > TimeSpan.FromHours(24))
-                {
-                    throw CustomExeption.ForbiddenException("Order cannot be canceled as it has exceeded the cancellation period.");
-                }
+            foundOrder.Status = OrderStatus.Cancelled;
+            await _orderRepository.UpdateAsync(foundOrder);
+            return true;
 
-                foundOrder.Status = OrderStatus.Cancelled;
-                await _orderRepository.UpdateAsync(foundOrder);
-                return true;
-            }
         }
         public async Task<bool> UpdateOrderItemQuantityAsync(Guid orderId, Guid itemId, int quantity)
         {
@@ -107,12 +99,12 @@ namespace Ecommerce.Service.src.Service
             return true;
         }
 
-        public async Task<IEnumerable<OrderReadDto>> GetOrdersByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<OrderReadDto>> GetOrdersByUserIdAsync(Guid userId, string status)
         {
             var foundUser = await _userRepository.GetByIdAsync(userId);
             if (foundUser is not null)
             {
-                var result = _orderRepository.GetOrderByUserIdAsync(userId);
+                var result = await _orderRepository.GetOrderByUserIdAsync(userId, status);
                 return _mapper.Map<IEnumerable<OrderReadDto>>(result);
             }
             else

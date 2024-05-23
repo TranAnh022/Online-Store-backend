@@ -6,7 +6,7 @@ namespace Ecommerce.Core.src.Interfaces
 {
     public interface IOrderRepository : IBaseRepository<Order, QueryOptions>
     {
-        Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId);
+        Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId,string? status);
 
         Task<ProductSnapshot> AddProductSnapshotAsync(ProductSnapshot productSnapshot);
 

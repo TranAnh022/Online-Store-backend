@@ -44,7 +44,7 @@ namespace Ecommerce.WebAPI.src.Repo
                     }
 
                     transaction.Commit();
-                    return entity;
+                    return await _data.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).Where(x => x.Id == entity.Id).FirstAsync();
                 }
                 catch (Exception)
                 {
@@ -61,10 +61,15 @@ namespace Ecommerce.WebAPI.src.Repo
             return productSnapshot;
         }
 
-        public async Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId,string status)
         {
-            var order = await _data.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).Where(x => x.UserId == userId).ToListAsync();
-            return order;
+            var query = _data.AsQueryable();
+            if(!string.IsNullOrWhiteSpace(status))
+            {
+                query = _data.Where(o => o.Status.ToString() == status);
+            }
+            return await query.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).Where(x => x.UserId == userId).ToListAsync();
+
         }
 
         public async Task<IEnumerable<Order>> ListAsync(QueryOptions queryOptions)
@@ -81,6 +86,11 @@ namespace Ecommerce.WebAPI.src.Repo
                 query = query.Skip((queryOptions.Page.Value - 1) * queryOptions.PageSize.Value).Take(queryOptions.PageSize.Value);
             }
             return await query.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).ToListAsync();
+        }
+
+        public async Task<Order> GetByIdAsync(Guid id)
+        {
+            return await _data.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).Where(x => x.Id == id).FirstOrDefaultAsync();
         }
     }
 }

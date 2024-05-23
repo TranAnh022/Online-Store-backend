@@ -27,7 +27,7 @@ namespace Ecommerce.WebAPI.src.Repo
 
             var topProducts = await _orders
                 .Include(o => o.OrderItems) // Include the OrderItems related to each Order
-                .Where(o => o.Status == OrderStatus.Completed)
+                .Where(o => o.Status == OrderStatus.Shipped)
                 .SelectMany(o => o.OrderItems) // Flatten the OrderItems from multiple Orders into a single sequence
                 .GroupBy(oi => new { oi.ProductSnapshot.ProductId, oi.ProductSnapshot.Title })
                 .Select(g => new

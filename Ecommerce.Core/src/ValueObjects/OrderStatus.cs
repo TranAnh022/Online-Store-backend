@@ -6,9 +6,8 @@ namespace Ecommerce.Core.src.ValueObjects
     public enum OrderStatus
     {
         Pending,
-        Completed,
         Shipped,
         Cancelled,
-        Processing
+
     }
 }
