@@ -72,7 +72,7 @@ namespace Ecommerce.WebAPI.src.Repo
 
         }
 
-        public async Task<IEnumerable<Order>> ListAsync(QueryOptions queryOptions)
+        public override async Task<IEnumerable<Order>> ListAsync(QueryOptions queryOptions)
         {
             var query = _data.AsQueryable();
 
@@ -88,7 +88,7 @@ namespace Ecommerce.WebAPI.src.Repo
             return await query.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).ToListAsync();
         }
 
-        public async Task<Order> GetByIdAsync(Guid id)
+        public override async Task<Order> GetByIdAsync(Guid id)
         {
             return await _data.Include(o => o.OrderItems).ThenInclude(oi => oi.ProductSnapshot).Where(x => x.Id == id).FirstOrDefaultAsync();
         }

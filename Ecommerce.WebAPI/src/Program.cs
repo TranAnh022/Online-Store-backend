@@ -66,7 +66,7 @@ builder.Services.AddSwaggerGen(c =>
 
 
 // adding db context into your app
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("Localhost"));
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
 dataSourceBuilder.MapEnum<UserRole>();
 dataSourceBuilder.MapEnum<OrderStatus>();
 var dataSource = dataSourceBuilder.Build();
@@ -173,6 +173,7 @@ builder.Services.AddAuthorization(policy =>
 });
 
 var app = builder.Build();
+
 
 
 app.UseCors("AllowAllOrigins");

@@ -18,7 +18,7 @@ namespace Ecommerce.WebAPI.src.Repo
 
         }
 
-        public async Task<IEnumerable<OrderItem>> ListAsync(QueryOptions queryOptions)
+        public override async Task<IEnumerable<OrderItem>> ListAsync(QueryOptions queryOptions)
         {
             var query = _data.AsQueryable();
 

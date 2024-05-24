@@ -24,7 +24,7 @@ namespace Ecommerce.WebAPI.src.Repo
             var cart = await _databaseContext.Carts
                                              .Include(c => c.CartItems!)
                                                 .ThenInclude(ci => ci.Product)
-                                                    .ThenInclude(p => p.Images)
+                                                    .ThenInclude(p => p!.Images)
                                              .FirstOrDefaultAsync(c => c.UserId == userId);
 
             // If the cart doesn't exist, create a new one
@@ -42,7 +42,7 @@ namespace Ecommerce.WebAPI.src.Repo
             }
 
             // Check if the item already exists in the cart
-            var existingCartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+            var existingCartItem = cart?.CartItems?.FirstOrDefault(ci => ci.ProductId == productId);
             if (existingCartItem != null)
             {
                 // Update the quantity of the existing cart item
