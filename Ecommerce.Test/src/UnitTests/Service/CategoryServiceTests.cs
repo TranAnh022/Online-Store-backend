@@ -148,7 +148,7 @@ namespace Ecommerce.Test.src.UnitTests.Service
                 new Category("Category 3", "http://example.com/image3.jpg")
             };
 
-            var queryOptions = new QueryOptions { Page = 1, PageSize = 3, SortBy = "Name", SortOrder = "asc" };
+            var queryOptions = new QueryOptions { Page = 1, PageSize = 3, SortBy = "Name", };
 
             _mockCategoryRepository.Setup(x => x.ListAsync(queryOptions)).ReturnsAsync(categories);
             _mockMapper.Setup(m => m.Map<IEnumerable<CategoryReadDto>>(categories))

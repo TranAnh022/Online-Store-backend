@@ -4,6 +4,7 @@ using Ecommerce.Core.src.Entities;
 using Ecommerce.Core.src.Interfaces;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.Service;
+using Ecommerce.Service.src.ServiceAbstract;
 using Moq;
 using Xunit;
 
@@ -16,10 +17,11 @@ namespace Ecommerce.Test.src.UnitTests.Service
         private readonly Mock<IProductImageRepository> _mockProductImageRepository = new Mock<IProductImageRepository>();
         private readonly Mock<ICategoryRepository> _mockCategoryRepository = new Mock<ICategoryRepository>();
         private readonly Mock<IMapper> _mockMapper = new Mock<IMapper>();
-
+        private readonly Mock<ICloudinaryService> _mockCloudinaryService = new Mock<ICloudinaryService>();
         public ProductServiceTests()
         {
-            _productService = new ProductService(_mockProductRepository.Object, _mockMapper.Object, _mockProductImageRepository.Object, _mockCategoryRepository.Object);
+            _productService = new ProductService(_mockProductRepository.Object, _mockMapper.Object, _mockCloudinaryService.Object, _mockMapper.Object, _mockProductImageRepository.Object, _mockCategoryRepository.Object);
+
         }
 
 
@@ -179,7 +181,7 @@ namespace Ecommerce.Test.src.UnitTests.Service
             _mockMapper.Setup(m => m.Map<IEnumerable<ProductReadDto>>(products)).Returns(products.Select(p => new ProductReadDto { Title = p.Title }));
 
             // Act
-            var result = await _productService.GetAllAsync(new ProductQueryOptions { Title = "Product", Page = 1, PageSize = 5, SortBy = "Name", SortOrder = "asc" });
+            var result = await _productService.GetAllAsync(new ProductQueryOptions {Page = 1, PageSize = 5, SortBy = "Name" });
 
             // Assert
             Assert.NotNull(result);

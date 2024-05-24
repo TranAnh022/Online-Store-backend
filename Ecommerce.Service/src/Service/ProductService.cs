@@ -17,7 +17,7 @@ namespace Ecommerce.Service.src.Service
         private readonly ICloudinaryService _cloudinaryService;
         private IProductImageRepository _productImageRepository;
 
-        public ProductService(IProductRepository productRepository, ICloudinaryService cloudinaryService, IMapper mapper, IProductImageRepository productImageRepository, ICategoryRepository categoryRepository) : base(productRepository, mapper)
+        public ProductService(IProductRepository productRepository, IMapper @object, ICloudinaryService cloudinaryService, IMapper mapper, IProductImageRepository productImageRepository, ICategoryRepository categoryRepository) : base(productRepository, mapper)
         {
             _productRepository = productRepository;
             _productImageRepository = productImageRepository;

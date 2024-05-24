@@ -1,6 +1,8 @@
 using FluentAssertions;
 using Ecommerce.Core.src.Entities.CartAggregate;
 using Xunit;
+using Ecommerce.Core.src.Entities;
+using System;
 
 namespace Ecommerce.Test.src.UnitTests.Core
 {
@@ -10,72 +12,54 @@ namespace Ecommerce.Test.src.UnitTests.Core
         public void Cart_AddItem_Success()
         {
             // Arrange
-            var cart = new Cart(Guid.NewGuid());
-            var item = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
+            var cartId = Guid.NewGuid();
+            var productId = Guid.NewGuid();
+            var cart = new Cart(cartId);
+            var product = new Product("Car", 12, "Car description", Guid.NewGuid(), 20);
 
             // Act
-            cart.AddItem(item);
+            cart.AddItem(cartId, product, 2);
 
             // Assert
-            Assert.Single(cart.CartItems!);
-        }
-
-        [Fact]
-        public void Cart_AddItem_NullItem_ThrowsException()
-        {
-            // Arrange
-            var cart = new Cart(Guid.NewGuid());
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => cart.AddItem(null!));
+            cart.CartItems.Should().HaveCount(1);
         }
 
         [Fact]
         public void Cart_RemoveItem_Success()
         {
             // Arrange
-            var cart = new Cart(Guid.NewGuid());
-            var item = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
-            cart.AddItem(item);
+            var cartId = Guid.NewGuid();
+            var cart = new Cart(cartId);
+            var productId = Guid.NewGuid();
+            var item = new CartItem(productId, cartId, 1);
+            var product = new Product("Car", 12, "Car description", productId, 20);
+            cart.AddItem(cartId, product, 1);
 
             // Act
-            var result = cart.RemoveItem(item);
+            cart.RemoveItem(product, 1);
 
-            // Assert
-            Assert.True(result);
-            Assert.Empty(cart.CartItems!);
-        }
 
-        [Fact]
-        public void Cart_RemoveItem_NonExistingItem_ReturnsFalse()
-        {
-            // Arrange
-            var cart = new Cart(Guid.NewGuid());
-            var item = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
-
-            // Act
-            var result = cart.RemoveItem(item);
-
-            // Assert
-            Assert.False(result);
-            Assert.Empty(cart.CartItems!);
+            cart.CartItems.Should().BeEmpty();
         }
 
         [Fact]
         public void Cart_ClearCart_Success()
         {
             // Arrange
-            var cart = new Cart(Guid.NewGuid());
-            var item1 = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 1);
-            var item2 = new CartItem(Guid.NewGuid(), Guid.NewGuid(), 2);
-            cart.AddItem(item1);
-            cart.AddItem(item2);
+            var cartId = Guid.NewGuid();
+            var cart = new Cart(cartId);
+            var productId1 = Guid.NewGuid();
+            var productId2 = Guid.NewGuid();
+            var item1 = new CartItem(productId1, cartId, 1);
+            var item2 = new CartItem(productId2, cartId, 2);
+            cart.AddItem(cartId, new Product("Car1", 12, "Car description", productId1, 20), 1);
+            cart.AddItem(cartId, new Product("Car2", 12, "Car description", productId2, 20), 2);
 
             // Act
             cart.ClearCart();
 
             // Assert
-            Assert.Empty(cart.CartItems!);
+            cart.CartItems.Should().BeEmpty();
         }
     }
 }

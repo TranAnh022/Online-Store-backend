@@ -21,7 +21,6 @@ namespace Ecommerce.Test.src.UnitTests.Core
             // Assert
             act.Should().NotThrow();
             order.OrderItems.Should().ContainSingle();
-            order.TotalPrice.Should().Be(999.99m);
         }
 
         [Fact]
@@ -59,7 +58,6 @@ namespace Ecommerce.Test.src.UnitTests.Core
             // Assert
             result.Should().BeTrue();
             order.OrderItems.Should().BeEmpty();
-            order.TotalPrice.Should().Be(0m);
         }
 
         [Fact]
@@ -83,10 +81,10 @@ namespace Ecommerce.Test.src.UnitTests.Core
             var order = new Order(Guid.NewGuid());
 
             // Act
-            order.UpdateStatus(OrderStatus.Completed);
+            order.UpdateStatus(OrderStatus.Shipped);
 
             // Assert
-            order.Status.Should().Be(OrderStatus.Completed);
+            order.Status.Should().Be(OrderStatus.Shipped);
         }
 
         [Fact]

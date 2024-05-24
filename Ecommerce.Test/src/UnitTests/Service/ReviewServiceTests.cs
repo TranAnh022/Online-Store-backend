@@ -30,7 +30,7 @@ namespace Ecommerce.Test.src.UnitTests.Service
             _mockUserRepository.Setup(x => x.ExistsAsync(userId)).ReturnsAsync(false);
             _mockProductRepository.Setup(x => x.ExistsAsync(createDto.ProductId)).ReturnsAsync(true);
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _reviewService.CreateOneAsync(userId, createDto));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _reviewService.CreateOneAsync(createDto));
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace Ecommerce.Test.src.UnitTests.Service
             _mockReviewRepository.Setup(x => x.AddAsync(review)).ReturnsAsync(review);
             _mockMapper.Setup(x => x.Map<ReviewReadDto>(review)).Returns(new ReviewReadDto());
 
-            var result = await _reviewService.CreateOneAsync(userId, createDto);
+            var result = await _reviewService.CreateOneAsync(createDto);
 
             Assert.NotNull(result);
             _mockReviewRepository.Verify(x => x.AddAsync(It.IsAny<Review>()), Times.Once);
