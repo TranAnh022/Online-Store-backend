@@ -19,7 +19,7 @@ namespace Ecommerce.WebAPI.src.Repo
         {
         }
 
-        public async Task<IEnumerable<User>> ListAsync(QueryOptions options)
+        public override async Task<IEnumerable<User>> ListAsync(QueryOptions options)
         {
             Console.WriteLine($"options", options);
 

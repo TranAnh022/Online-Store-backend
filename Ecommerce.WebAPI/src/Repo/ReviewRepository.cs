@@ -22,7 +22,7 @@ namespace Ecommerce.WebAPI.src.Repo
                                  .ToListAsync();
         }
 
-        public async Task<IEnumerable<Review>> ListAsync(QueryOptions options)
+        public override async Task<IEnumerable<Review>> ListAsync(QueryOptions options)
         {
             var query = _data.AsQueryable();
 

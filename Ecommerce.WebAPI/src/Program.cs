@@ -22,6 +22,7 @@ using Ecommerce.Core.src.Entities.OrderAggregate;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Ecommerce.WebAPI.src.Authorization;
+using Swashbuckle.AspNetCore.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,32 +36,23 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(c =>
-{
-    // Include 'SecurityScheme' to use JWT Authentication
-    var jwtSecurityScheme = new OpenApiSecurityScheme
-    {
-        BearerFormat = "JWT",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = JwtBearerDefaults.AuthenticationScheme,
-        Description = "Put Bearer + your token in the box below",
-
-        Reference = new OpenApiReference
-        {
-            Id = JwtBearerDefaults.AuthenticationScheme,
-            Type = ReferenceType.SecurityScheme
-        }
-    };
-
-    c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { jwtSecurityScheme, Array.Empty<string>() }
-    });
-});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(
+  options =>
+  {
+      options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+      {
+          Description = "Bearer token authentication",
+          Name = "Authorization",
+          In = ParameterLocation.Header,
+          Scheme = "Bearer"
+      }
+      );
+      // swagger would add the token to the request header of routes with [Authorize] attribute
+      options.OperationFilter<SecurityRequirementsOperationFilter>();
+  }
+);
 
 
 
@@ -85,7 +77,7 @@ builder.Services.AddCors(options =>
             options.AddPolicy("AllowAllOrigins",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000", "http://localhost:3001") // Add specific origins here
+                    builder.WithOrigins("http://localhost:3000", "http://localhost:3001", "https://online-store-demo.netlify.app") // Add specific origins here
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();

@@ -25,7 +25,7 @@ namespace Ecommerce.WebAPI.src.Repo
             _cartRepository = cartRepository;
         }
 
-        public async Task<Order> AddAsync(Order entity)
+        public override async Task<Order> AddAsync(Order entity)
         {
             using (var transaction = _databaseContext.Database.BeginTransaction())
             {

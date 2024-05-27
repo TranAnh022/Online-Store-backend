@@ -93,7 +93,7 @@ namespace Ecommerce.WebAPI.src.Repo
         }
 
 
-        public async Task<Product> UpdateAsync(Product entity)
+        public override async Task<Product> UpdateAsync(Product entity)
         {
             _data.Entry(entity).State = EntityState.Modified;
             await _databaseContext.SaveChangesAsync();

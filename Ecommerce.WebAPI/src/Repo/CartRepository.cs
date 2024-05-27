@@ -100,7 +100,7 @@ namespace Ecommerce.WebAPI.src.Repo
                 .FirstOrDefaultAsync(c => c.UserId == userId) ?? throw new InvalidOperationException("Cart not found");
         }
 
-        public async Task<IEnumerable<Cart>> ListAsync(QueryOptions options)
+        public override async Task<IEnumerable<Cart>> ListAsync(QueryOptions options)
         {
             var query = _data.Include(c => c.CartItems)
                            .ThenInclude(ci => ci.Product)

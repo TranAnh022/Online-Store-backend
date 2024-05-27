@@ -31,6 +31,7 @@ namespace Ecommerce.WebAPI.src.Data
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
         }
 
+        [Obsolete]
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity =>
@@ -42,7 +43,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.Property(u => u.Name).IsRequired().HasMaxLength(255);
                 entity.Property(u => u.Password).IsRequired().HasMaxLength(255);
                 entity.HasCheckConstraint("users_avatar_check", "avatar LIKE 'http%' OR avatar = ''");
-                entity.HasData(SeedingData.GetUsersSeed());
+                //entity.HasData(SeedingData.GetUsersSeed());
             });
             // Configuring Order entity
             modelBuilder.Entity<Order>(entity =>
@@ -65,7 +66,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.HasIndex(c => c.Name).IsUnique().HasDatabaseName("categories_name_key");
                 entity.Property(c => c.Image).IsRequired();
                 entity.HasCheckConstraint("categories_image_check", "image LIKE 'http%' OR image = ''");
-                entity.HasData(SeedingData.GetCategoriesSeed());
+                //entity.HasData(SeedingData.GetCategoriesSeed());
             });
 
             // Configuring Product entity
@@ -78,7 +79,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.Property(p => p.Price).HasPrecision(18, 2);
                 entity.HasCheckConstraint("products_price_check", "price > 0");
                 entity.HasOne(p => p.Category).WithMany(c => c.Products).HasForeignKey(p => p.CategoryId).OnDelete(DeleteBehavior.SetNull);
-                entity.HasData(SeedingData.GetProductsSeed());
+                //entity.HasData(SeedingData.GetProductsSeed());
             });
             // Configuring ProductImage entity
             modelBuilder.Entity<ProductImage>(entity =>
@@ -88,7 +89,7 @@ namespace Ecommerce.WebAPI.src.Data
                 entity.HasOne(pi => pi.Product).WithMany(p => p.Images).HasForeignKey(pi => pi.ProductId).OnDelete(DeleteBehavior.Cascade);
                 entity.Property(pi => pi.Url).IsRequired();
                 entity.HasCheckConstraint("url_check", "url LIKE 'http%' OR url = ''");
-                entity.HasData(SeedingData.GetProductImagesSeed());
+                //entity.HasData(SeedingData.GetProductImagesSeed());
             });
 
             // Configuring Cart entity

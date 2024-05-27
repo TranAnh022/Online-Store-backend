@@ -16,7 +16,7 @@ namespace Ecommerce.WebAPI.src.Repo
         {
 
         }
-        public async Task<IEnumerable<CartItem>> ListAsync(QueryOptions options)
+        public override async Task<IEnumerable<CartItem>> ListAsync(QueryOptions options)
         {
             IQueryable<CartItem> query = _data.Include(ci => ci.Product);
 
